@@ -30,16 +30,14 @@ memory_map:
 
 GPIODirectionOut:
 
-	LDR R2, [R0]         @ Carrega o valor do mapeamento do pino com offset igual a 0 em R2
-	LDR R1, [R8, R2]     @ Carrega em R1 o valor do endereço base em R8 com um offset que é o valor de R2
-	LDR R3, [R0,#4]      @ Carrega o endereço do mapeamento do pino em R3
+	LDR R2, [R8, R0]     @ Carrega em R1 o valor do endereço base em R8 com um offset que é o valor de R2
 	MOV R4, #0b111       @ Mascara para limpar 3 bits
-	LSL R4, R3           @ Faz um deslocamento em R0 com o valor que está em R3
-	BIC R1, R0           @ Limpa os 3 bits da posição
+	LSL R4, R1           @ Faz um deslocamento em R0 com o valor que está em R3
+	BIC R2, R4           @ Limpa os 3 bits da posição
 	MOV R4, #1           @ Move 1 bit para R0
-	LSL R4, R3           @ Faz um deslocamento em R0 com o valor que está em R3
-	ORR R1, R4           @ Faz uma operação lógica ORR para adicionar na posição o valor 1
-	STR R1, [R8, R2]     @ Armazena no endereço base em R8 com um offset que é o valor de R2, o valor de R1
+	LSL R4, R1           @ Faz um deslocamento em R0 com o valor que está em R3
+	ORR R2, R4           @ Faz uma operação lógica ORR para adicionar na posição o valor 1
+	STR R2, [R8, R0]     @ Armazena no endereço base em R8 com um offset que é o valor de R2, o valor de R1
 
 	BX LR 
 
@@ -50,7 +48,7 @@ GPIODirectionOut:
 
 GPIOTurn:
 
-	@ R0 = pin 
+	@ R0 = pin offset 
 	@ R1 = value
 
 	MOV R2, R8  
@@ -60,10 +58,8 @@ GPIOTurn:
 	CMP R1,#1               
 	ADDEQ R2, #setregoffset 
 
-	MOV R4,#1               
-	ADD R0, #8              
-	LDR R0, [R0]            
-	LSL R4, R3              
+	MOV R4,#1                           
+	LSL R4, R0              
 	STR R4, [R2]            
 
 	BX LR
