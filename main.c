@@ -3,20 +3,19 @@
 #define ON 1;
 
 struct pin{
-        int ofst_reg_fsel;
-        int ofst_pin_fsel;
-        int ofst_pin_st_clr;    
+        int reg_func_ofst;
+        int pin_func_ofst;
+        int pin_st_clr_ofst;    
 
-}pin6={0,18,6};
+};
 
-extern memory_map();
-extern GPIODirectionOut(struct pin *p);
-extern GPIOTurn(struct pin *p,int value);
+extern void memory_map(void);
+extern void GPIODirectionOut(int reg_offset, int pin_offset);
+extern void GPIOTurn(int pin_offset,int value);
 
 int  main(){
-
 	memory_map();
-	GPIODirectionOut(&pin6);
-	GPIOTurn(&pin6,OFF);	
+	GPIODirectionOut(0,18);
+	GPIOTurn(6,OFF);	
 }
 
