@@ -1,9 +1,17 @@
 .equ setregoffset, 28 @ Offset do registrador de definição
 .equ clrregoffset, 40 @ Offset do registrador de limpeza
 
+.global nanoSleep
 .global memory_map
 .global GPIODirectionOut
 .global GPIOTurn
+
+nanoSleep:
+	LDR R0,=time
+	LDR R1,=time
+	MOV R7,#162
+	SWI 0
+	BX LR
 
 memory_map:
 
@@ -29,15 +37,17 @@ memory_map:
     BX LR
 
 GPIODirectionOut:
+	MOV R9,R0
+	MOV R6,R1
 
-	LDR R2, [R8, R0]     @ Carrega em R1 o valor do endereço base em R8 com um offset que é o valor de R2
+	LDR R2, [R8, R9]     @ Carrega em R1 o valor do endereço base em R8 com um offset que é o valor de R2
 	MOV R4, #0b111       @ Mascara para limpar 3 bits
-	LSL R4, R1           @ Faz um deslocamento em R0 com o valor que está em R3
+	LSL R4, R6           @ Faz um deslocamento em R0 com o valor que está em R3
 	BIC R2, R4           @ Limpa os 3 bits da posição
 	MOV R4, #1           @ Move 1 bit para R0
-	LSL R4, R1           @ Faz um deslocamento em R0 com o valor que está em R3
+	LSL R4, R6           @ Faz um deslocamento em R0 com o valor que está em R3
 	ORR R2, R4           @ Faz uma operação lógica ORR para adicionar na posição o valor 1
-	STR R2, [R8, R0]     @ Armazena no endereço base em R8 com um offset que é o valor de R2, o valor de R1
+	STR R2, [R8, R9]     @ Armazena no endereço base em R8 com um offset que é o valor de R2, o valor de R1
 
 	BX LR 
 
@@ -50,16 +60,19 @@ GPIOTurn:
 
 	@ R0 = pin offset 
 	@ R1 = value
+	
+	MOV R9,R0
+	MOV R6,R1
 
 	MOV R2, R8  
 	
-	CMP R1,#0               
+	CMP R6,#0               
 	ADDEQ R2, #clrregoffset 
-	CMP R1,#1               
+	CMP R6,#1               
 	ADDEQ R2, #setregoffset 
 
 	MOV R4,#1                           
-	LSL R4, R0              
+	LSL R4, R9              
 	STR R4, [R2]            
 
 	BX LR
@@ -67,5 +80,8 @@ GPIOTurn:
 
 .data
 
+time:
+	.word 0
+	.word 1000000
 fileName: .asciz "/dev/mem" @ Caminho do arquivo para mapeamento da memória virtual
 gpioaddr: .word 0x20200 @ Offset na memória física da área a ser mapeada
