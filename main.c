@@ -2,10 +2,10 @@
 #define OFF 0
 #define ON 1
 
-struct pin{
+struct gpio_pin{
         int reg_func_ofst;
         int pin_func_ofst;
-        int pin_st_clr_ofst;    
+        int pin_number;    
 
 };
 
@@ -21,15 +21,14 @@ void delay(int millis){
 	}
 }
 
+void set_pin_direction(struct gpio_pin pin){
+	GPIODirectionOut(pin.reg_func_ofst,pin.pin_func_ofst);
+}
+
+void set_pin_value(struct gpio_pin pin,int value){
+	GPIOTurn(pin.pin_number,value);
+}
+
 int  main(){
 	memory_map();
-	GPIODirectionOut(0,18);
-	
-	for(int i=0;i<10;i++){
-		 GPIOTurn(6,ON);
-	         delay(1000);
-       		 GPIOTurn(6,OFF);
-       		 delay(1000);    
-		
-	}	
 }
