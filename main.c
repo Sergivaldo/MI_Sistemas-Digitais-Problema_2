@@ -90,18 +90,18 @@ void command(uint8_t value,uint8_t rs_level){
 	}
 	
 	set_gpio_value(pin_rs,rs_level);
-	set_gpio_value(pin_d7,bit[7]);
-	set_gpio_value(pin_d6,bit[6]);
-	set_gpio_value(pin_d5,bit[5]);
-	set_gpio_value(pin_d4,bit[4]);
+	set_gpio_value(pin_d7,bits[7]);
+	set_gpio_value(pin_d6,bits[6]);
+	set_gpio_value(pin_d5,bits[5]);
+	set_gpio_value(pin_d4,bits[4]);
 	
 	pulse_enable();
 	
 	set_gpio_value(pin_rs,rs_level);
-	set_gpio_value(pin_d7,bit[3]);
-	set_gpio_value(pin_d6,bit[2]);
-	set_gpio_value(pin_d5,bit[1]);
-	set_gpio_value(pin_d4,bit[0]);
+	set_gpio_value(pin_d7,bits[3]);
+	set_gpio_value(pin_d6,bits[2]);
+	set_gpio_value(pin_d5,bits[1]);
+	set_gpio_value(pin_d4,bits[0]);
 	
 	pulse_enable();
 }
