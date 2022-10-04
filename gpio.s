@@ -82,6 +82,6 @@ GPIOTurn:
 
 time:
 	.word 0
-	.word 1000000
+	.word 999999
 fileName: .asciz "/dev/mem" @ Caminho do arquivo para mapeamento da memória virtual
 gpioaddr: .word 0x20200 @ Offset na memória física da área a ser mapeada
