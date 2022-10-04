@@ -4,7 +4,6 @@ struct gpio_pin{
         int func_reg_ofst;
         int func_pin_ofst;
         int pin_number;    
-
 };
 
 enum state{OFF,ON};
@@ -20,15 +19,14 @@ void delay(int millis){
 	}
 }
 
-void set_pin_direction(struct gpio_pin pin){
+void set_gpio_to_out(struct gpio_pin pin){
 	GPIODirectionOut(pin.func_reg_ofst,pin.func_pin_ofst);
 }
 
-void set_pin_value(struct gpio_pin pin, enum state pin_state){
+void set_gpio_value(struct gpio_pin pin, enum state pin_state){
 	int state = pin_state;
 	GPIOTurn(pin.pin_number,state);
 }
 
 int  main(){
-	memory_map();
 }
