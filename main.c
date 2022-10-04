@@ -82,6 +82,30 @@ void pulse_enable(){
 	set_gpio_value(pin_e,0);
 };
 
+void command(uint8_t value,uint8_t rs_level){
+	uint8_t bits[8];
+    
+	for(int i=0;i < 8;i++){
+		bits[i] = (value >> i) & 0x01;
+	}
+	
+	set_gpio_value(pin_rs,rs_level);
+	set_gpio_value(pin_d7,bit[7]);
+	set_gpio_value(pin_d6,bit[6]);
+	set_gpio_value(pin_d5,bit[5]);
+	set_gpio_value(pin_d4,bit[4]);
+	
+	pulse_enable();
+	
+	set_gpio_value(pin_rs,rs_level);
+	set_gpio_value(pin_d7,bit[3]);
+	set_gpio_value(pin_d6,bit[2]);
+	set_gpio_value(pin_d5,bit[1]);
+	set_gpio_value(pin_d4,bit[0]);
+	
+	pulse_enable();
+}
+
 void function_set(){
 	
 };
@@ -132,29 +156,7 @@ void inc_or_dec_cursor(){
 	
 }
 
-void command(uint8_t value,uint8_t rs_level){
-	uint8_t bits[8];
-    
-	for(int i=0;i < 8;i++){
-		bits[i] = (value >> i) & 0x01;
-	}
-	
-	set_gpio_value(pin_rs,rs_level);
-	set_gpio_value(pin_d7,bit[7]);
-	set_gpio_value(pin_d6,bit[6]);
-	set_gpio_value(pin_d5,bit[5]);
-	set_gpio_value(pin_d4,bit[4]);
-	
-	pulse_enable();
-	
-	set_gpio_value(pin_rs,rs_level);
-	set_gpio_value(pin_d7,bit[3]);
-	set_gpio_value(pin_d6,bit[2]);
-	set_gpio_value(pin_d5,bit[1]);
-	set_gpio_value(pin_d4,bit[0]);
-	
-	pulse_enable();
-}
+
 
 int  main(){
 }
