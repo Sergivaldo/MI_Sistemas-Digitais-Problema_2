@@ -1,19 +1,18 @@
 #include <stdio.h>
-#define OFF 0
-#define ON 1
 
 struct gpio_pin{
-        int reg_func_ofst;
-        int pin_func_ofst;
+        int func_reg_ofst;
+        int func_pin_ofst;
         int pin_number;    
 
 };
 
+enum state{OFF,ON};
+
 extern void nanoSleep(void);
 extern void memory_map(void);
 extern void GPIODirectionOut(int reg_offset, int pin_offset);
-extern void GPIOTurn(int pin_offset,int value);
-
+extern void GPIOTurn(int pin_offset,int state);
 
 void delay(int millis){
 	for(int i=0;i<millis;i++){
@@ -22,11 +21,12 @@ void delay(int millis){
 }
 
 void set_pin_direction(struct gpio_pin pin){
-	GPIODirectionOut(pin.reg_func_ofst,pin.pin_func_ofst);
+	GPIODirectionOut(pin.func_reg_ofst,pin.func_pin_ofst);
 }
 
-void set_pin_value(struct gpio_pin pin,int value){
-	GPIOTurn(pin.pin_number,value);
+void set_pin_value(struct gpio_pin pin, enum state pin_state){
+	int state = pin_state;
+	GPIOTurn(pin.pin_number,state);
 }
 
 int  main(){
