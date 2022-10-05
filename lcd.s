@@ -1,8 +1,5 @@
 .global lcd_init
-
-.macro load_pin pin, reg_offset, pin_offset
-        
-.endm
+.include "gpio.s"
 
 @ Da um pulso no pino enable o ligando e desligando.
 .macro enable
@@ -27,41 +24,8 @@
         GPIODirectionOut d4
 .endm
 
-@ Macro para setar o modo de operação do display para 4 bits.
-.macro fset
-
-        
-.endm
-
-@ Macro que define se o cursor será exibido e piscará e se o display será ligado 
-.macro display d,c,b
-
-.endm
-
-@ Define o modo de entrada do display. Faz com que o cursor ou display desloque
-@ para esquerda ou direita quando um caractere é escrito
-.macro entrymode i_d, s
-
-.endm
-
-
-@ Macro para limpar o display LCD.
-
-.macro clearLcd
-
-.endm
-
-.macro write
-
-.endm
-
-@ Macro para escrever um caractere no display
-@
-@ Parâmetros
-@ hex - Hexadecimal do caractere a ser escrito
-
 .macro command data,rs_value
-        MOV R6, \value
+        MOV R6, \data
 
         GPIOTurn rs, #rs_value
 
@@ -128,11 +92,6 @@ get_bit:
         LSR R1,R0 @ Desloca para o bit menos significativo o bit da posição desejada
 
         BX LR
-	
-@ Macro usada para deslocar o display sempre que chamado.
-.macro cursor_display_shift sc, rl 
-
-.endm
 
 .data
 
