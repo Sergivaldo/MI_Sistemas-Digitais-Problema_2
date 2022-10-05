@@ -58,10 +58,10 @@
 @ Parâmetros
 @ hex - Hexadecimal do caractere a ser escrito
 
-.macro command value
+.macro command data,rs_value
         MOV R6, \value
 
-        GPIOTurn rs, #1
+        GPIOTurn rs, #rs_value
 
         MOV R0,#7
         BL get_bit
