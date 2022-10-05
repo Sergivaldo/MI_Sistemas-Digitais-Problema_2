@@ -109,7 +109,12 @@
 lcd_init:
 	
 	command #0x01
-	command #0b
+	command #0x20
+	command #0x20
+	command #0x20
+	command #0x20
+	command #0x0f
+	
 	BX LR
 	
 @ branch que pega um bit do valor hexadecimal do caractere
