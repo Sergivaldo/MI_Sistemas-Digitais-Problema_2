@@ -45,7 +45,7 @@ struct gpio_pin{
 }pin_rs={8,15,25},pin_e={0,3,1},pin_d4={4,6,12},pin_d5={4,18,16},pin_d6 ={8,0,20},pin_d7={8,3,21};
 
 enum state{OFF,ON};
-enum direction{LEFT,WRITE}
+enum direction{LEFT,WRITE};
 extern void nanoSleep(void);
 extern void memory_map(void);
 extern void GPIODirectionOut(int reg_offset, int pin_offset);
@@ -155,8 +155,6 @@ void write_str(){
 void inc_or_dec_cursor(){
 	
 }
-
-
 
 int  main(){
 }
