@@ -39,17 +39,17 @@
 #define LCD_5x8_DOTS 0x00
 
 struct gpio_pin{
-        int func_reg_ofst;
-        int func_pin_ofst;
-        int pin_number;    
+        uint8_t func_reg_ofst;
+        uint8_t func_pin_ofst;
+        uint8_t pin_number;    
 }pin_rs={8,15,25},pin_e={0,3,1},pin_d4={4,6,12},pin_d5={4,18,16},pin_d6 ={8,0,20},pin_d7={8,3,21};
 
 enum state{OFF,ON};
 enum direction{LEFT,WRITE};
 extern void nanoSleep(void);
 extern void memory_map(void);
-extern void GPIODirectionOut(int reg_offset, int pin_offset);
-extern void GPIOTurn(int pin_offset,int state);
+extern void GPIODirectionOut(uint8_t reg_offset, uint8_t pin_offset);
+extern void GPIOTurn(uint8_t pin_offset,uint8_t state);
 
 void delay(int millis){
 	for(int i=0;i<millis;i++){
@@ -62,7 +62,7 @@ void set_gpio_to_out(struct gpio_pin pin){
 }
 
 void set_gpio_value(struct gpio_pin pin, uint8_t pin_state){
-	int state = pin_state;
+	uint8_t state = pin_state;
 	GPIOTurn(pin.pin_number,state);
 }
 
