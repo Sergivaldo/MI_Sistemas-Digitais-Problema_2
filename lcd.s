@@ -1,6 +1,13 @@
 .global lcd_init
 .include "gpio.s"
 
+.macro nanoSleep time
+        LDR R0,=\time      
+        LDR R1,=\time        
+        MOV R7, #162  
+        SWI 0                
+.endm
+
 @ Da um pulso no pino enable o ligando e desligando.
 .macro enable
         GPIOTurn e, #0
@@ -95,6 +102,10 @@ get_bit:
 
 .data
 
+time1ms:
+	.word 0 @ Tempo em segundos
+	.word 1500000 @ Tempo em nanossegundos
+	
 @ Lcd
 
 rs:
