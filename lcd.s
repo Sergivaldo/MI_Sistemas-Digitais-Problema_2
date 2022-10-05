@@ -28,79 +28,18 @@
 @ Macro para setar o modo de operação do display para 4 bits.
 .macro fset
 
-        GPIOTurn rs,#0
-
-        GPIOTurn d7,#0
-
-        GPIOTurn d6,#0
-
-        GPIOTurn d5, #1
-
-        GPIOTurn d4, #0
-
-        enable
-        .ltorg
+        
 .endm
 
 @ Macro que define se o cursor será exibido e piscará e se o display será ligado 
 .macro display d,c,b
 
-        GPIOTurn rs,#0
-
-        GPIOTurn d7,#0
-
-        GPIOTurn d6, #0
-
-        GPIOTurn d5,#0
-
-        GPIOTurn d4, #0
-
-        enable
-
-        GPIOTurn rs, #0
-
-        GPIOTurn d7,#1
-
-        GPIOTurn d6,#\d     @ O display está ligado quando D é 1 e desligado quando D é 0
-
-        GPIOTurn d5,#\c     @ O cursor é exibido quando C é 1 e não é exibido quando C é 0
- 
-        GPIOTurn d4,#\b     @ Faz o cursor piscar se B for igual a 1, se não, o cursor fica parado
-
-        enable
-
-        .ltorg
 .endm
 
 @ Define o modo de entrada do display. Faz com que o cursor ou display desloque
 @ para esquerda ou direita quando um caractere é escrito
 .macro entrymode i_d, s
 
-        GPIOTurn rs, #0
-
-        GPIOTurn d7,#0
-
-        GPIOTurn d6,#0
-
-        GPIOTurn d5,#0
-
-        GPIOTurn d4,#0
-
-        enable
-
-        GPIOTurn rs,#0
-
-        GPIOTurn d7,#0
-
-        GPIOTurn d6,#1
-
-        GPIOTurn d5,#\i_d  @ O cursor se move para a direita e para a esquerda quando quando um caractere é escrito ou lido
-
-        GPIOTurn d4,#\s    @ O display se move para a direita ou para a esquerda quando S é 1. O display não muda se S for 0
-
-        enable
-
-        .ltorg
 .endm
 
 
@@ -108,39 +47,19 @@
 
 .macro clearLcd
 
-        GPIOTurn rs,#0
-
-        GPIOTurn d7,#0
-
-        GPIOTurn d6,#0
-
-        GPIOTurn d5,#0
-
-        GPIOTurn d4,#0
-
-        enable
-
-        GPIOTurn rs,#0
-
-        GPIOTurn d7,#0
-
-        GPIOTurn d6,#0
-
-        GPIOTurn d5,#0
-
-        GPIOTurn d4,#1
-
-        enable
-        .ltorg
 .endm
 
+.macro write
+
+.endm
 
 @ Macro para escrever um caractere no display
 @
 @ Parâmetros
 @ hex - Hexadecimal do caractere a ser escrito
-.macro write hex
-        MOV R6, \hex
+
+.macro command value
+        MOV R6, \value
 
         GPIOTurn rs, #1
 
@@ -187,6 +106,12 @@
         .ltorg
 .endm
 
+lcd_init:
+	
+	command #0x01
+	command #0b
+	BX LR
+	
 @ branch que pega um bit do valor hexadecimal do caractere
 get_bit:
         MOV R2,#1 @ Move 1 para o registrador R0
@@ -199,30 +124,6 @@ get_bit:
 @ Macro usada para deslocar o display sempre que chamado.
 .macro cursor_display_shift sc, rl 
 
-        GPIOTurn rs,#0
-
-        GPIOTurn d7,#0
-
-        GPIOTurn d6,#0
-
-        GPIOTurn d5,#0
-
-        GPIOTurn d4,#1
-
-        enable
-
-        GPIOTurn rs,#0
-
-        GPIOTurn d7,\sc     @ Define o movimento para o cursor ou display
-
-        GPIOTurn d6,\rl     @ Deslocamento para a esquerda ou para a direita   
-
-        GPIOTurn d5,#0
-
-        GPIOTurn d4,#0
-
-        enable
-        .ltorg
 .endm
 
 .data
