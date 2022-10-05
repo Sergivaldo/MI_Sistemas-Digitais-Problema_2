@@ -44,8 +44,6 @@ struct gpio_pin{
         uint8_t pin_number;    
 }pin_rs={8,15,25},pin_e={0,3,1},pin_d4={4,6,12},pin_d5={4,18,16},pin_d6 ={8,0,20},pin_d7={8,3,21};
 
-enum state{OFF,ON};
-enum direction{LEFT,WRITE};
 extern void nanoSleep(void);
 extern void memory_map(void);
 extern void GPIODirectionOut(uint8_t reg_offset, uint8_t pin_offset);
@@ -110,24 +108,23 @@ void function_set(){
 	
 };
 
-void display(enum state display_state){
+void display(){
 	
 }
 
-void cursor(enum state cursor_state){
+void cursor(){
 	
 }
 
-void cursor_blink(enum state blink_state){
+void cursor_blink(){
 	
 }
 
 void lcd_begin(){
 	command(LCD_CLEAR_DISPLAY, 0);
-	command(LCD_FUNCTION_SET | LCD_4BIT_MODE | LCD_1_LINE, 0);
-	command(LCD_FUNCTION_SET | LCD_4BIT_MODE | LCD_1_LINE, 0);
-	command(LCD_FUNCTION_SET | LCD_4BIT_MODE | LCD_1_LINE, 0);
-	command(LCD_FUNCTION_SET | LCD_4BIT_MODE | LCD_1_LINE, 0);
+	for (uint_8 i = 0; i<4;i++){
+		command(LCD_FUNCTION_SET | LCD_4BIT_MODE | LCD_1_LINE, 0);
+	}
 	command(LCD_ENTRY_RIGHT | LCD_ENTRY_SHIFT_DECREMENT, 0);
 	command(LCD_DISPLAY_ON | LCD_CURSOR_ON | LCD_BLINK_ON, 0);
 	
