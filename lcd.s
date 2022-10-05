@@ -136,27 +136,29 @@ get_bit:
 
 .data
 
+@ Lcd
+
 rs:
-	.word 0 @ offset para selecionar o registrador de função
-	.word 0 @ offset do pino no registrador de função
-	.word 0 @ offset do pino no registrador de set e clear
+	.word 8 @ offset para selecionar o registrador de função
+	.word 15 @ offset do pino no registrador de função
+	.word 25 @ offset do pino no registrador de set e clear
 e:
 	.word 0 @ offset para selecionar o registrador de função
-	.word 0 @ offset do pino no registrador de função
-	.word 0 @ offset do pino no registrador de set e clear
+	.word 3 @ offset do pino no registrador de função
+	.word 1 @ offset do pino no registrador de set e clear
 d4: 
-	.word 0 @ offset para selecionar o registrador de função
-	.word 0 @ offset do pino no registrador de função
-	.word 0 @ offset do pino no registrador de set e clear
+	.word 4 @ offset para selecionar o registrador de função
+	.word 6 @ offset do pino no registrador de função
+	.word 12 @ offset do pino no registrador de set e clear
 d5:
-	.word 0 @ offset para selecionar o registrador de função
-	.word 0 @ offset do pino no registrador de função
-	.word 0 @ offset do pino no registrador de set e clear 
+	.word 4 @ offset para selecionar o registrador de função
+	.word 18 @ offset do pino no registrador de função
+	.word 16 @ offset do pino no registrador de set e clear 
 d6:
-	.word 0 @ offset para selecionar o registrador de função
+	.word 8 @ offset para selecionar o registrador de função
 	.word 0 @ offset do pino no registrador de função
-	.word 0 @ offset do pino no registrador de set e clear
+	.word 20 @ offset do pino no registrador de set e clear
 d7:
- 	.word 0 @ offset para selecionar o registrador de função
-	.word 0 @ offset do pino no registrador de função
-	.word 0 @ offset do pino no registrador de set e clear
+ 	.word 8 @ offset para selecionar o registrador de função
+	.word 3 @ offset do pino no registrador de função
+	.word 21 @ offset do pino no registrador de set e clear
