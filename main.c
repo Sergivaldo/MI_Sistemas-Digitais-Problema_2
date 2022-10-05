@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include <stdint.h>
 
+// flags para estados
+
+#define ON 1
+#define OFF 0
+
 // Comandos
 #define LCD_CLEAR_DISPLAY 0x01
 #define LCD_RETURN_HOME 0x02
@@ -43,6 +48,10 @@ struct gpio_pin{
         uint8_t func_pin_ofst;
         uint8_t pin_number;    
 }pin_rs={8,15,25},pin_e={0,3,1},pin_d4={4,6,12},pin_d5={4,18,16},pin_d6 ={8,0,20},pin_d7={8,3,21};
+
+uint8_t display_control = 0;
+uint8_t display_function = 0;
+uint8_t display_mode = 0;
 
 extern void nanoSleep(void);
 extern void memory_map(void);
@@ -108,26 +117,47 @@ void function_set(){
 	
 };
 
-void display(){
-	
+void display(uint8_t display_state){
+	if(display_state == ON){
+		display_control |= LCD_DISPLAY_ON;
+		command(display | cursor | cursor_blink, 0);
+	}else{
+		display_control &= LCD_DISPLAY_ON;
+		command(display | cursor | cursor_blink, 0);
+	}
 }
 
-void cursor(){
-	
+void cursor(uint8_t cursor_state){
+	if(cursor_state == ON){
+		display_control |= LCD_CURSOR_ON;
+		command(display | cursor | cursor_blink, 0);
+	}else{
+		cursor &= LCD_CURSOR_ON;
+		command(display | cursor | cursor_blink, 0);
+	}
 }
 
-void cursor_blink(){
-	
+void cursor_blink(uint8_t blink_state){
+	if(blink_state == ON){
+		display_control |= LCD_BLINK_ON;
+		command(display | cursor | cursor_blink, 0);
+	}else{
+		display_control &= LCD_BLINK_ON;
+		command(display | cursor | cursor_blink, 0);
+	}
 }
 
 void lcd_begin(){
+	display_function = LCD_FUNCTION_SET | LCD_4BIT_MODE | LCD_1_LINE;
+	display_mode = LCD_ENTRY_RIGHT | LCD_ENTRY_SHIFT_DECREMENT;
+	display_control = LCD_DISPLAY_ON | LCD_CURSOR_ON | LCD_BLINK_ON;
+	
 	command(LCD_CLEAR_DISPLAY, 0);
 	for (uint_8 i = 0; i<4;i++){
-		command(LCD_FUNCTION_SET | LCD_4BIT_MODE | LCD_1_LINE, 0);
+		command(display_function, 0);
 	}
-	command(LCD_ENTRY_RIGHT | LCD_ENTRY_SHIFT_DECREMENT, 0);
-	command(LCD_DISPLAY_ON | LCD_CURSOR_ON | LCD_BLINK_ON, 0);
-	
+	command(display_mode, 0);
+	command(display_control, 0);
 }
 
 void clear_lcd(){
@@ -138,12 +168,8 @@ void set_cursor_pos(){
 	
 }
 
-void write(){
-	
-}
-
-void write_char(){
-	
+void write_char(uint8_t char){
+	command(char,1);
 }
 
 void write_str(){
@@ -154,4 +180,7 @@ void inc_or_dec_cursor(){
 }
 
 int  main(){
+	lcd_pin_to_out(pin_e,pin_rs,pin_d7,pin_d6,pin_d5,pin_d4);
+	lcd_begin();
+	write_char('H');
 }
