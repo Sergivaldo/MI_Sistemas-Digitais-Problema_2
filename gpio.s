@@ -1,12 +1,7 @@
 .equ setregoffset, 28 @ Offset do registrador de definição
 .equ clrregoffset, 40 @ Offset do registrador de limpeza
 
-.macro nanoSleep time
-        LDR R0,=\time      
-        LDR R1,=\time        
-        MOV R7, #162  
-        SWI 0                
-.endm
+
 
 @ Mapeia o endereço de memória virtual
 .macro memory_map
@@ -68,8 +63,5 @@
 .endm
 
 .data
-time1ms:
-	.word 0 @ Tempo em segundos
-	.word 1500000 @ Tempo em nanossegundos
 fileName: .asciz "/dev/mem" @ Caminho do arquivo para mapeamento da memória virtual
 gpioaddr: .word 0x20200 @ Offset na memória física da área a ser mapeada
