@@ -1,3 +1,5 @@
+.global lcd_init
+
 .macro load_pin pin, reg_offset, pin_offset
         
 .endm
@@ -81,7 +83,7 @@
 
         enable
 
-        GPIOTurn rs, #1
+        GPIOTurn rs, #rs_value
 
         MOV R0,#3
         BL get_bit
@@ -108,12 +110,13 @@
 
 lcd_init:
 	
-	command #0x01
-	command #0x20
-	command #0x20
-	command #0x20
-	command #0x20
-	command #0x0f
+	command #0x01,0
+	command #0x20,0
+	command #0x20,0
+	command #0x20,0
+	command #0x20,0
+	command #0x0f,0
+	command #0x06,0
 	
 	BX LR
 	
