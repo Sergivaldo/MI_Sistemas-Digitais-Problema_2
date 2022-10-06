@@ -1,12 +1,10 @@
-all: main
+all:main
 
-main:main.c gpio.o lcd.o
-  gcc -o output main main.c gpio.o lcd.o
+main:main.c map.o lcd.o
+	gcc -o main main.c map.o lcd.o
   
 lcd.o:lcd.s
-  as -g -o lcd.o ldc.s
+	as -g -o lcd.o lcd.s
   
-gpio.o:gpio.s
-  as -g -o gpio.o gpio.s
-
-
+map.o:map.s
+	as -g -o map.o map.s
