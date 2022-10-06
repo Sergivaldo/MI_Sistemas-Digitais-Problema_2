@@ -18,3 +18,7 @@
     SWI 0                               
     MOV R8, R0                         @ Move o ponteiro do endereço de memoria mapeado para o R8                     
 .endm
+
+.data
+fileName: .asciz "/dev/mem" @ Caminho do arquivo para mapeamento da memória virtual
+gpioaddr: .word 0x20200 @ Offset na memória física da área a ser mapeada
