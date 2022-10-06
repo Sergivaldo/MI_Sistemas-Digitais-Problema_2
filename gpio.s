@@ -39,6 +39,4 @@
         STR R0, [R2]            @ Carrega no valor da terceira palavra o valor que está em R0
 .endm
 
-.data
-fileName: .asciz "/dev/mem" @ Caminho do arquivo para mapeamento da memória virtual
-gpioaddr: .word 0x20200 @ Offset na memória física da área a ser mapeada
+
