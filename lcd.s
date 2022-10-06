@@ -1,4 +1,9 @@
 .global lcd_init
+.global set_out
+.global write
+.global clear_lcd
+.global delay
+
 .include "gpio.s"
 
 .macro nanoSleep time
@@ -21,20 +26,26 @@
         .ltorg
 .endm
 
-@ Seta todos os pinos do lcd como saída.
-.macro setOut
-        GPIODirectionOut e
-        GPIODirectionOut rs
-        GPIODirectionOut d7
-        GPIODirectionOut d6
-        GPIODirectionOut d5
-        GPIODirectionOut d4
+.macro fset_init
+
+        GPIOTurn rs,#0
+
+        GPIOTurn d7,#0
+
+        GPIOTurn d6,#0
+
+        GPIOTurn d5, #1
+
+        GPIOTurn d4, #0
+
+        enable
+        .ltorg
 .endm
 
 .macro command data,rs_value
         MOV R6, \data
 
-        GPIOTurn rs, #rs_value
+        GPIOTurn rs, #\rs_value
 
         MOV R0,#7
         BL get_bit
@@ -54,7 +65,7 @@
 
         enable
 
-        GPIOTurn rs, #rs_value
+        GPIOTurn rs, #\rs_value
 
         MOV R0,#3
         BL get_bit
@@ -80,15 +91,38 @@
 .endm
 
 lcd_init:
-	
 	command #0x01,0
-	command #0x20,0
-	command #0x20,0
-	command #0x20,0
-	command #0x20,0
+	fset_init
+	fset_init
+	fset_init
+	fset_init
 	command #0x0f,0
 	command #0x06,0
 	
+	BX LR
+	
+write:
+	MOV R9,R0
+	command R9,1
+	BX LR
+	
+clear_lcd:
+	command #0x01
+	BX LR
+
+@ Seta todos os pinos do lcd como saída.
+set_out:
+        GPIODirectionOut e
+        GPIODirectionOut rs
+        GPIODirectionOut d7
+        GPIODirectionOut d6
+        GPIODirectionOut d5
+        GPIODirectionOut d4
+	
+	BX LR
+	
+delay:
+	nanoSleep time1ms
 	BX LR
 	
 @ branch que pega um bit do valor hexadecimal do caractere
