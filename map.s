@@ -1,3 +1,5 @@
+
+.global memory_map
 @ Mapeia o endereço de memória virtual
 .macro memory_map
     LDR R0, =fileName     @ R0 = nome do arquivo
