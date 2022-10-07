@@ -1,4 +1,3 @@
-
 .global memory_map
 @ Mapeia o endereço de memória virtual
 memory_map:
