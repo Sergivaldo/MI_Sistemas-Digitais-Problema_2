@@ -19,9 +19,9 @@
         LSL R2,R0 @ Desloca para esquerda o valor em R2 para a posição do bit passado em R0
         AND R1, R6,R2 @ Realiza a operação lógica and para que seja pego apenas o bit desejado
         LSR R1,R0 @ Desloca para o bit menos significativo o bit da posição desejada
+	
 	.ltorg
- .endm
-
+.endm
 @ Da um pulso no pino enable o ligando e desligando.
 .macro enable
         GPIOTurn e, #0
@@ -105,18 +105,16 @@ lcd_init:
 	fset_init
 	fset_init
 	fset_init
-	command #0x0f,0
+	command #0x0e,0
 	command #0x06,0
-	
 	BX LR
-	
 write:
 	MOV R9,R0
 	command R9,1
 	BX LR
 	
 clear_lcd:
-	command #0x01
+	command #0x01,0
 	BX LR
 
 @ Seta todos os pinos do lcd como saída.
@@ -140,7 +138,7 @@ delay:
 
 time1ms:
 	.word 0 @ Tempo em segundos
-	.word 1000000 @ Tempo em nanossegundos
+	.word 1200000 @ Tempo em nanossegundos
 	
 @ Lcd
 
