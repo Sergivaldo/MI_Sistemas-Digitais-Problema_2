@@ -38,5 +38,3 @@
         LSL R0, R3              @ Faz um deslocamento em R0 com o valor da terceira palavra
         STR R0, [R2]            @ Carrega no valor da terceira palavra o valor que está em R0
 .endm
-
-
