@@ -1,65 +1,322 @@
-#include<stdio.h>
-#include<string.h>
+.global lcd_init
+.global set_out
+.global write
+.global clear_lcd
+.global delay
 
-extern void memory_map(void);
-extern void lcd_init(void);
-extern void delay(void);
-extern void set_out(void);
-extern void clear_lcd(void);
-extern void write(int c);
-extern void map_e(int reg,int pin_offset, int pin_num);
-extern void map_rs(int reg,int pin_offset, int pin_num);
-extern void map_d7(int reg,int pin_offset, int pin_num);
-extern void map_d6(int reg,int pin_offset, int pin_num);
-extern void map_d5(int reg,int pin_offset, int pin_num);
-extern void map_d4(int reg,int pin_offset, int pin_num);
+.global map_e
+.global map_rs
+.global map_d7
+.global map_d6
+.global map_d5
+.global map_d4
+.global out_lcd
 
-void lcd(int e,int rs, int d7,int d6,int d5, int d4){
-	memory_map();
+.include "gpio.s"
 
-	int reg= 4 * (e/10);
-	int pin_offset = 3 *(e%10);
-        map_e(reg,pin_offset,e);
+.macro nanoSleep time
+        LDR R0,=\time      
+        LDR R1,=\time        
+        MOV R7, #162  
+        SWI 0                
+.endm
+
+@ branch que pega um bit do valor hexadecimal do caractere
+.macro get_bit
+        MOV R2,#1 @ Move 1 para o registrador R0
+        LSL R2,R0 @ Desloca para esquerda o valor em R2 para a posição do bit passado em R0
+        AND R1, R6,R2 @ Realiza a operação lógica and para que seja pego apenas o bit desejado
+        LSR R1,R0 @ Desloca para o bit menos significativo o bit da posição desejada
 	
-	reg = 4 *(rs/10);
-	pin_offset = 3*(rs%10);
-	map_rs(reg,pin_offset,rs);
+	.ltorg
+.endm
+@ Da um pulso no pino enable o ligando e desligando.
+.macro enable
+        GPIOTurn e, #0
+        nanoSleep time1ms
 
-	reg = 4 *(d7/10);
-        pin_offset = 3*(d7%10);
-        map_d7(reg,pin_offset,d7);
+        GPIOTurn e,#1
+        nanoSleep time1ms
 
-	reg = 4 *(d6/10);
-        pin_offset = 3*(d6%10);
-        map_d6(reg,pin_offset,d6);
+        GPIOTurn e, #0
+        nanoSleep time1ms
+        .ltorg
+.endm
+
+.macro fset_init
+
+        GPIOTurn rs,#0
+
+        GPIOTurn d7,#0
+
+        GPIOTurn d6,#0
+
+        GPIOTurn d5, #1
+
+        GPIOTurn d4, #0
+
+        enable
+        .ltorg
+.endm
+
+.macro command data,rs_value
+        MOV R6, \data
+
+        GPIOTurn rs, #\rs_value
+
+        MOV R0,#7
+        get_bit
+        GPIOTurn d7, R1
+
+        MOV R0,#6
+        get_bit
+        GPIOTurn d6, R1
+
+        MOV R0,#5
+        get_bit
+        GPIOTurn d5, R1
+
+        MOV R0,#4
+        get_bit
+        GPIOTurn d4, R1
+
+        enable
+
+        GPIOTurn rs, #\rs_value
+
+        MOV R0,#3
+        get_bit
+        GPIOTurn d7, R1
+
+
+        MOV R0,#2
+        get_bit
+        GPIOTurn d6, R1
+
+
+        MOV R0,#1
+        get_bit
+        GPIOTurn d5, R1
+
+
+        MOV R0,#0
+        get_bit
+        GPIOTurn d4, R1
+
+        enable
+        .ltorg
+.endm
+
+out_lcd:
+	GPIODirectionOut e
+	GPIODirectionOut rs
+	GPIODirectionOut d7
+	GPIODirectionOut d6
+	GPIODirectionOut d5
+	GPIODirectionOut d4
+
+offset_led:
+	MOV R5,R0
+	MOV R6,R1
+	MOV R9,R2
+
+	LDR R4,=led
+	STR R5,[R4]
 	
-	reg = 4 *(d5/10);
-        pin_offset = 3*(d5%10);
-        map_d5(reg,pin_offset,d5);
+	LDR R4,=led
+	ADD R4,#4
+	STR R6,[R4]
 
-	reg = 4 *(d4/10);
-        pin_offset = 3*(d4%10);
-        map_d4(reg,pin_offset,d4);
+	LDR R4,=led
+	ADD R4,#8
+	STR R9,[R4]
+	BX LR
 
-	set_out();
-	lcd_init();
-}
+map_e:
+	MOV R5,R0
+        MOV R6,R1
+        MOV R9,R2
 
+        LDR R4,=e
+        STR R5,[R4]
 
-void write_str(char c[]){
-	int len = strlen(c);
-	for(int i=0;i<len;i++){
-		write(c[i]);
-	}
-}
+        LDR R4,=e
+        ADD R4,#4
+        STR R6,[R4]
 
-void delay_millis(int millis){
-        for (int i =0;i<millis;i++){ 
-                delay();
-        }
-}
+        LDR R4,=e
+        ADD R4,#8
+        STR R9,[R4]
+        BX LR
 
-void main(){
-   	lcd(1,25,21,20,16,12);
-	write_str("MI - SD");	
-}
+map_rs:
+
+	MOV R5,R0
+        MOV R6,R1
+        MOV R9,R2
+
+        LDR R4,=rs
+        STR R5,[R4]
+
+        LDR R4,=rs
+        ADD R4,#4
+        STR R6,[R4]
+
+        LDR R4,=rs
+        ADD R4,#8
+        STR R9,[R4]
+        BX LR
+
+map_d7:
+	MOV R5,R0
+        MOV R6,R1
+        MOV R9,R2
+
+        LDR R4,=d7
+        STR R5,[R4]
+
+        LDR R4,=d7
+        ADD R4,#4
+        STR R6,[R4]
+
+        LDR R4,=d7
+        ADD R4,#8
+        STR R9,[R4]
+        BX LR
+
+map_d6:
+	MOV R5,R0
+        MOV R6,R1
+        MOV R9,R2
+
+        LDR R4,=d6
+        STR R5,[R4]
+
+        LDR R4,=d6
+        ADD R4,#4
+        STR R6,[R4]
+
+        LDR R4,=d6
+        ADD R4,#8
+        STR R9,[R4]
+        BX LR
+
+map_d5:
+	MOV R5,R0
+        MOV R6,R1
+        MOV R9,R2
+
+        LDR R4,=d5
+        STR R5,[R4]
+
+        LDR R4,=d5
+        ADD R4,#4
+        STR R6,[R4]
+
+        LDR R4,=d5
+        ADD R4,#8
+        STR R9,[R4]
+        BX LR
+
+map_d4:
+	MOV R5,R0
+        MOV R6,R1
+        MOV R9,R2
+
+        LDR R4,=d4
+        STR R5,[R4]
+
+        LDR R4,=d4
+        ADD R4,#4
+        STR R6,[R4]
+
+        LDR R4,=d4
+        ADD R4,#8
+        STR R9,[R4]
+        BX LR
+
+on_led:
+	
+	GPIOTurn led,#0
+	BX LR
+
+off_led:
+	GPIOTurn led,#1
+	BX LR
+
+out_led:
+	GPIODirectionOut led
+	BX LR
+
+lcd_init:
+	command #0x01,0
+	fset_init
+	fset_init
+	fset_init
+	fset_init
+	command #0x0e,0
+	command #0x06,0
+	BX LR
+write:
+	MOV R9,R0
+	command R9,1
+	BX LR
+	
+clear_lcd:
+	command #0x01,0
+	BX LR
+
+@ Seta todos os pinos do lcd como saída.
+set_out:
+        GPIODirectionOut e
+        GPIODirectionOut rs
+        GPIODirectionOut d7
+        GPIODirectionOut d6
+        GPIODirectionOut d5
+        GPIODirectionOut d4
+	
+	BX LR
+	
+delay:
+	nanoSleep time1s
+	BX LR
+	
+.data
+
+time1ms:
+	.word 0 @ Tempo em segundos
+	.word 1000000 @ Tempo em nanossegundos
+
+time1s:
+	.word 1
+	.word 000000000
+led:
+	.word 0
+	.word 0
+	.word 0
+@ Lcd
+
+rs:
+	.word 0 @ offset para selecionar o registrador de função
+	.word 0 @ offset do pino no registrador de função
+	.word 0 @ offset do pino no registrador de set e clear
+e:
+	.word 0 @ offset para selecionar o registrador de função
+	.word 0 @ offset do pino no registrador de função
+	.word 0 @ offset do pino no registrador de set e clear
+d4: 
+	.word 0 @ offset para selecionar o registrador de função
+	.word 0 @ offset do pino no registrador de função
+	.word 0 @ offset do pino no registrador de set e clear
+d5:
+	.word 0 @ offset para selecionar o registrador de função
+	.word 0 @ offset do pino no registrador de função
+	.word 0 @ offset do pino no registrador de set e clear 
+d6:
+	.word 0 @ offset para selecionar o registrador de função
+	.word 0 @ offset do pino no registrador de função
+	.word 0 @ offset do pino no registrador de set e clear
+d7:
+ 	.word 0 @ offset para selecionar o registrador de função
+	.word 0 @ offset do pino no registrador de função
+	.word 0 @ offset do pino no registrador de set e clear
