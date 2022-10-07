@@ -3,10 +3,14 @@
 .global write
 .global clear_lcd
 .global delay
-.global offset_led
-.global on_led
-.global off_led
-.global out_led
+
+.global map_e
+.global map_rs
+.global map_d7
+.global map_d6
+.global map_d5
+.global map_d4
+.global out_lcd
 
 .include "gpio.s"
 
@@ -103,6 +107,14 @@
         .ltorg
 .endm
 
+out_lcd:
+	GPIODirectionOut e
+	GPIODirectionOut rs
+	GPIODirectionOut d7
+	GPIODirectionOut d6
+	GPIODirectionOut d5
+	GPIODirectionOut d4
+
 offset_led:
 	MOV R5,R0
 	MOV R6,R1
@@ -119,6 +131,109 @@ offset_led:
 	ADD R4,#8
 	STR R9,[R4]
 	BX LR
+
+map_e:
+	MOV R5,R0
+        MOV R6,R1
+        MOV R9,R2
+
+        LDR R4,=e
+        STR R5,[R4]
+
+        LDR R4,=e
+        ADD R4,#4
+        STR R6,[R4]
+
+        LDR R4,=e
+        ADD R4,#8
+        STR R9,[R4]
+        BX LR
+
+map_rs:
+
+	MOV R5,R0
+        MOV R6,R1
+        MOV R9,R2
+
+        LDR R4,=rs
+        STR R5,[R4]
+
+        LDR R4,=rs
+        ADD R4,#4
+        STR R6,[R4]
+
+        LDR R4,=rs
+        ADD R4,#8
+        STR R9,[R4]
+        BX LR
+
+map_d7:
+	MOV R5,R0
+        MOV R6,R1
+        MOV R9,R2
+
+        LDR R4,=d7
+        STR R5,[R4]
+
+        LDR R4,=d7
+        ADD R4,#4
+        STR R6,[R4]
+
+        LDR R4,=d7
+        ADD R4,#8
+        STR R9,[R4]
+        BX LR
+
+map_d6:
+	MOV R5,R0
+        MOV R6,R1
+        MOV R9,R2
+
+        LDR R4,=d6
+        STR R5,[R4]
+
+        LDR R4,=d6
+        ADD R4,#4
+        STR R6,[R4]
+
+        LDR R4,=d6
+        ADD R4,#8
+        STR R9,[R4]
+        BX LR
+
+map_d5:
+	MOV R5,R0
+        MOV R6,R1
+        MOV R9,R2
+
+        LDR R4,=d5
+        STR R5,[R4]
+
+        LDR R4,=d5
+        ADD R4,#4
+        STR R6,[R4]
+
+        LDR R4,=d5
+        ADD R4,#8
+        STR R9,[R4]
+        BX LR
+
+map_d4:
+	MOV R5,R0
+        MOV R6,R1
+        MOV R9,R2
+
+        LDR R4,=d4
+        STR R5,[R4]
+
+        LDR R4,=d4
+        ADD R4,#4
+        STR R6,[R4]
+
+        LDR R4,=d4
+        ADD R4,#8
+        STR R9,[R4]
+        BX LR
 
 on_led:
 	
@@ -163,7 +278,7 @@ set_out:
 	BX LR
 	
 delay:
-	nanoSleep time1ms
+	nanoSleep time1s
 	BX LR
 	
 .data
@@ -172,6 +287,9 @@ time1ms:
 	.word 0 @ Tempo em segundos
 	.word 1000000 @ Tempo em nanossegundos
 
+time1s:
+	.word 1
+	.word 000000000
 led:
 	.word 0
 	.word 0
@@ -179,26 +297,26 @@ led:
 @ Lcd
 
 rs:
-	.word 8 @ offset para selecionar o registrador de função
-	.word 15 @ offset do pino no registrador de função
-	.word 25 @ offset do pino no registrador de set e clear
+	.word 0 @ offset para selecionar o registrador de função
+	.word 0 @ offset do pino no registrador de função
+	.word 0 @ offset do pino no registrador de set e clear
 e:
 	.word 0 @ offset para selecionar o registrador de função
-	.word 3 @ offset do pino no registrador de função
-	.word 1 @ offset do pino no registrador de set e clear
-d4: 
-	.word 4 @ offset para selecionar o registrador de função
-	.word 6 @ offset do pino no registrador de função
-	.word 12 @ offset do pino no registrador de set e clear
-d5:
-	.word 4 @ offset para selecionar o registrador de função
-	.word 18 @ offset do pino no registrador de função
-	.word 16 @ offset do pino no registrador de set e clear 
-d6:
-	.word 8 @ offset para selecionar o registrador de função
 	.word 0 @ offset do pino no registrador de função
-	.word 20 @ offset do pino no registrador de set e clear
+	.word 0 @ offset do pino no registrador de set e clear
+d4: 
+	.word 0 @ offset para selecionar o registrador de função
+	.word 0 @ offset do pino no registrador de função
+	.word 0 @ offset do pino no registrador de set e clear
+d5:
+	.word 0 @ offset para selecionar o registrador de função
+	.word 0 @ offset do pino no registrador de função
+	.word 0 @ offset do pino no registrador de set e clear 
+d6:
+	.word 0 @ offset para selecionar o registrador de função
+	.word 0 @ offset do pino no registrador de função
+	.word 0 @ offset do pino no registrador de set e clear
 d7:
- 	.word 8 @ offset para selecionar o registrador de função
-	.word 3 @ offset do pino no registrador de função
-	.word 21 @ offset do pino no registrador de set e clear
+ 	.word 0 @ offset para selecionar o registrador de função
+	.word 0 @ offset do pino no registrador de função
+	.word 0 @ offset do pino no registrador de set e clear
