@@ -13,6 +13,15 @@
         SWI 0                
 .endm
 
+@ branch que pega um bit do valor hexadecimal do caractere
+.macro get_bit
+        MOV R2,#1 @ Move 1 para o registrador R0
+        LSL R2,R0 @ Desloca para esquerda o valor em R2 para a posição do bit passado em R0
+        AND R1, R6,R2 @ Realiza a operação lógica and para que seja pego apenas o bit desejado
+        LSR R1,R0 @ Desloca para o bit menos significativo o bit da posição desejada
+	.ltorg
+ .endm
+
 @ Da um pulso no pino enable o ligando e desligando.
 .macro enable
         GPIOTurn e, #0
@@ -125,14 +134,7 @@ delay:
 	nanoSleep time1ms
 	BX LR
 	
-@ branch que pega um bit do valor hexadecimal do caractere
-.macro get_bit:
-        MOV R2,#1 @ Move 1 para o registrador R0
-        LSL R2,R0 @ Desloca para esquerda o valor em R2 para a posição do bit passado em R0
-        AND R1, R6,R2 @ Realiza a operação lógica and para que seja pego apenas o bit desejado
-        LSR R1,R0 @ Desloca para o bit menos significativo o bit da posição desejada
-	.ltorg
- .endm
+
 
 .data
 
