@@ -10,7 +10,6 @@
 .global map_d6
 .global map_d5
 .global map_d4
-.global out_lcd
 
 .include "gpio.s"
 
@@ -106,14 +105,6 @@
         enable
         .ltorg
 .endm
-
-out_lcd:
-	GPIODirectionOut e
-	GPIODirectionOut rs
-	GPIODirectionOut d7
-	GPIODirectionOut d6
-	GPIODirectionOut d5
-	GPIODirectionOut d4
 
 offset_led:
 	MOV R5,R0
