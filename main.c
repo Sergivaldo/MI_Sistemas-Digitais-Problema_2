@@ -7,16 +7,40 @@ extern void delay(void);
 extern void set_out(void);
 extern void clear_lcd(void);
 extern void write(int c);
-extern void offset_led(int reg,int offset_pin,int pin_num);
-extern void on_led(void);
-extern void off_led(void);
-extern void out_led(void);
+extern void map_e(int reg,int pin_offset, int pin_num);
+extern void map_rs(int reg,int pin_offset, int pin_num);
+extern void map_d7(int reg,int pin_offset, int pin_num);
+extern void map_d6(int reg,int pin_offset, int pin_num);
+extern void map_d5(int reg,int pin_offset, int pin_num);
+extern void map_d4(int reg,int pin_offset, int pin_num);
 
-void led(int pin){
-	int reg= 4 * (pin/10);
-	int pin_offset = 3 *(pin %10);
-        offset_led(reg,pin_offset,pin);
+void lcd(int e,int rs, int d7,int d6,int d5, int d4){
+	int reg= 4 * (e/10);
+	int pin_offset = 3 *(e%10);
+        map_e(reg,pin_offset,e);
+	
+	reg = 4 *(rs/10);
+	pin_offset = 3*(rs%10);
+	map_rs(reg,pin_offset,rs);
+
+	reg = 4 *(d7/10);
+        pin_offset = 3*(d7%10);
+        map_d7(reg,pin_offset,d7);
+
+	reg = 4 *(d6/10);
+        pin_offset = 3*(d6%10);
+        map_d6(reg,pin_offset,d6);
+	
+	reg = 4 *(d5/10);
+        pin_offset = 3*(d5%10);
+        map_d5(reg,pin_offset,d5);
+
+	reg = 4 *(d4/10);
+        pin_offset = 3*(d4%10);
+        map_d4(reg,pin_offset,d4);
+
 }
+
 
 void write_str(char c[]){
 	int len = strlen(c);
@@ -25,9 +49,16 @@ void write_str(char c[]){
 	}
 }
 
+void delay_millis(int millis){
+        for (int i =0;i<millis;i++){ 
+                delay();
+        }
+}
+
 void main(){
-   memory_map();
-   led(6);
-   out_led();
-   off_led();
+   	memory_map();
+   	lcd(1,25,21,20,16,12);
+	set_out();
+	lcd_init();
+	write_str("Sis. Digitais");	
 }
