@@ -3,6 +3,10 @@
 .global write
 .global clear_lcd
 .global delay
+.global offset_led
+.global on_led
+.global off_led
+.global out_led
 
 .include "gpio.s"
 
@@ -99,6 +103,36 @@
         .ltorg
 .endm
 
+offset_led:
+	MOV R5,R0
+	MOV R6,R1
+	MOV R9,R2
+
+	LDR R4,=led
+	STR R5,[R4]
+	
+	LDR R4,=led
+	ADD R4,#4
+	STR R6,[R4]
+
+	LDR R4,=led
+	ADD R4,#8
+	STR R9,[R4]
+	BX LR
+
+on_led:
+	
+	GPIOTurn led,#0
+	BX LR
+
+off_led:
+	GPIOTurn led,#1
+	BX LR
+
+out_led:
+	GPIODirectionOut led
+	BX LR
+
 lcd_init:
 	command #0x01,0
 	fset_init
@@ -132,14 +166,16 @@ delay:
 	nanoSleep time1ms
 	BX LR
 	
-
-
 .data
 
 time1ms:
 	.word 0 @ Tempo em segundos
 	.word 1000000 @ Tempo em nanossegundos
-	
+
+led:
+	.word 0
+	.word 0
+	.word 0
 @ Lcd
 
 rs:
