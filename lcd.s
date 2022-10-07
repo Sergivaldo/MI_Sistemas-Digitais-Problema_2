@@ -138,7 +138,7 @@ delay:
 
 time1ms:
 	.word 0 @ Tempo em segundos
-	.word 1200000 @ Tempo em nanossegundos
+	.word 1000000 @ Tempo em nanossegundos
 	
 @ Lcd
 
