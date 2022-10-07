@@ -1,7 +1,7 @@
 
 .global memory_map
 @ Mapeia o endereço de memória virtual
-.macro memory_map
+memory_map:
     LDR R0, =fileName     @ R0 = nome do arquivo
     MOV R1, #0x1b0        @ Move um hexadecimal para R1
     ORR R1, #0x006        @ Faz a operação lógica or para juntar o valor hexadecimal passado com o valor de R1
@@ -19,7 +19,8 @@
     MOV R7, #192                       @ sys map
     SWI 0                               
     MOV R8, R0                         @ Move o ponteiro do endereço de memoria mapeado para o R8                     
-.endm
+    
+    BX LR
 
 .data
 fileName: .asciz "/dev/mem" @ Caminho do arquivo para mapeamento da memória virtual
