@@ -8,14 +8,6 @@ extern void set_out(void);
 extern void clear_lcd(void);
 extern void write(uint8_t c);
 
-void main(){
-  memory_map();
-  set_out();
-  lcd_init();
- 
-  counter();
-}
-
 void counter(){
    int num = 0x39;
    for (int i =9;i<=0;i--){
@@ -31,3 +23,13 @@ void delay_millis(int millis){
     delay();
   }
 }
+
+
+void main(){
+  memory_map();
+  set_out();
+  lcd_init();
+ 
+  counter();
+}
+
