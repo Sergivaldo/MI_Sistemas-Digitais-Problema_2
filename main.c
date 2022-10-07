@@ -15,6 +15,8 @@ extern void map_d5(int reg,int pin_offset, int pin_num);
 extern void map_d4(int reg,int pin_offset, int pin_num);
 
 void lcd(int e,int rs, int d7,int d6,int d5, int d4){
+	memory_map();
+
 	int reg= 4 * (e/10);
 	int pin_offset = 3 *(e%10);
         map_e(reg,pin_offset,e);
@@ -39,6 +41,8 @@ void lcd(int e,int rs, int d7,int d6,int d5, int d4){
         pin_offset = 3*(d4%10);
         map_d4(reg,pin_offset,d4);
 
+	set_out();
+	lcd_init();
 }
 
 
@@ -56,9 +60,6 @@ void delay_millis(int millis){
 }
 
 void main(){
-   	memory_map();
    	lcd(1,25,21,20,16,12);
-	set_out();
-	lcd_init();
-	write_str("Sis. Digitais");	
+	write_str("MI - SD");	
 }
