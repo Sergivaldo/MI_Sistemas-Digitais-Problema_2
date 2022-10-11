@@ -6,7 +6,7 @@ extern void lcd_init(void);
 extern void delay(void);
 extern void set_out(void);
 extern void clear_lcd(void);
-extern void write(int c);
+extern void write(char c);
 extern void map_e(int reg,int pin_offset, int pin_num);
 extern void map_rs(int reg,int pin_offset, int pin_num);
 extern void map_d7(int reg,int pin_offset, int pin_num);
