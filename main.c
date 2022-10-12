@@ -1,18 +1,29 @@
 #include<stdio.h>
 #include<string.h>
+#include<time.h>
 
 extern void memory_map(void);
 extern void lcd_init(void);
-extern void delay(void);
 extern void set_out(void);
 extern void clear_lcd(void);
-extern void write(char c);
+extern void write(int c);
+extern void set_cursor(int pos);
+extern void cgram_addr(int local);
+
 extern void map_e(int reg,int pin_offset, int pin_num);
 extern void map_rs(int reg,int pin_offset, int pin_num);
 extern void map_d7(int reg,int pin_offset, int pin_num);
 extern void map_d6(int reg,int pin_offset, int pin_num);
 extern void map_d5(int reg,int pin_offset, int pin_num);
 extern void map_d4(int reg,int pin_offset, int pin_num);
+
+void delay(int number_of_seconds){
+    int milli_seconds = 1000 * number_of_seconds;
+ 
+    clock_t start_time = clock();
+ 
+    while (clock() < start_time + milli_seconds);
+}
 
 void lcd(int e,int rs, int d7,int d6,int d5, int d4){
         memory_map();
@@ -45,7 +56,6 @@ void lcd(int e,int rs, int d7,int d6,int d5, int d4){
         lcd_init();
 }
 
-
 void write_str(char c[]){
         int len = strlen(c);
         for(int i=0;i<len;i++){
@@ -53,13 +63,22 @@ void write_str(char c[]){
         }
 }
 
-void delay_millis(int millis){
-        for (int i =0;i<millis;i++){
-                delay();
-        }
+void cursor_position(int row, int col){
+	int aux_row = row == 2? 4:0;
+	int aux_col = col >= 0 && col <= 15? col:0;
+	set_cursor(aux_row | aux_col);
 }
+
+void create_custom_char(char pattern[],int local){
+	int i=0;
+	cgram_addr((local*8));
+	
+	for (i=0; i<8; i++){
+		write(pattern[i]);
+	}
+}
+
 
 void main(){
         lcd(1,25,21,20,16,12);
-        write_str("MI - SD");
 }
