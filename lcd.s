@@ -3,6 +3,8 @@
 .global write
 .global clear_lcd
 .global delay
+.global cgram_addr
+.global set_cursor
 
 .global map_e
 .global map_rs
@@ -227,7 +229,6 @@ map_d4:
         BX LR
 
 on_led:
-	
 	GPIOTurn led,#0
 	BX LR
 
@@ -248,9 +249,27 @@ lcd_init:
 	command #0x0e,0
 	command #0x06,0
 	BX LR
+	
+set_cursor:
+	MOV R9,#0x80
+	MOV R10,R0
+	ORR R11,R9,R10
+	command R11,0
+	
+	BX LR 
+	
 write:
 	MOV R9,R0
 	command R9,1
+	
+	BX LR
+	
+cgram_addr:
+	MOV R6,R0
+	MOV R5,#0x40
+	ADD R5,R6
+	command R5,0
+	
 	BX LR
 	
 clear_lcd:
@@ -268,19 +287,10 @@ set_out:
 	
 	BX LR
 	
-delay:
-	nanoSleep time1s
-	BX LR
-	
 .data
-
-time1ms:
-	.word 0 @ Tempo em segundos
-	.word 1000000 @ Tempo em nanossegundos
-
-time1s:
-	.word 1
-	.word 000000000
+.time1ms:
+	.word 0
+	.word 1000000
 led:
 	.word 0
 	.word 0
