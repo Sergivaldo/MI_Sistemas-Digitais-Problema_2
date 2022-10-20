@@ -1,7 +1,6 @@
 #ifndef LCD_H_INCLUDED
 #define LCD_H_INCLUDED
 
-
 extern void memory_map(void);
 extern void lcd_init(void);
 extern void set_out(void);
