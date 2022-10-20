@@ -258,7 +258,7 @@ set_cursor:
 	
 	BX LR 
 	
-write:
+write_lcd:
 	MOV R9,R0
 	command R9,1
 	
@@ -288,7 +288,7 @@ set_out:
 	BX LR
 	
 .data
-.time1ms:
+time1ms:
 	.word 0
 	.word 1000000
 led:
