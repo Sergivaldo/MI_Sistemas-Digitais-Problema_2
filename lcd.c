@@ -33,7 +33,7 @@ void lcd(int e,int rs, int d7,int d6,int d5, int d4){
         lcd_init();
 }
 
-void print_lcd(char c[]){
+void print_lcd(unsigned char c[]){
         int len = strlen(c);
         for(int i=0;i<len;i++){
                 write(c[i]);
