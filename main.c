@@ -77,7 +77,9 @@ unsigned char* uart_receive_bytes (){
 }
 
 void main(){
-  uart_configure();
-  uart_send_bytes('H');
-  unsigned char* response = uart_receive_bytes();
+  lcd(1,25,21,20,16,12); // Inicia as configurações do display lcd.
+  uart_configure(); // Inicia as configurações do uart.
+  uart_send_bytes('H'); // Transmite um byte.
+  unsigned char* response = uart_receive_bytes(); // Recebe o byte enviado.
+  print(response);
 }
