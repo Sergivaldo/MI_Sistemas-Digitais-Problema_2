@@ -1,6 +1,5 @@
 #include<stdio.h>
 #include<string.h>
-#include<time.h>
 #include "lcd.h"
 
 void lcd(int e,int rs, int d7,int d6,int d5, int d4){
