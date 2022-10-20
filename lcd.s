@@ -1,6 +1,6 @@
 .global lcd_init
 .global set_out
-.global write
+.global write_char
 .global clear_lcd
 .global delay
 .global cgram_addr
