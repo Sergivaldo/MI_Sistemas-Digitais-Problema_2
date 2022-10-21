@@ -55,7 +55,7 @@ unsigned char* uart_receive_bytes (){
     if (uart0_filestream != -1)
     {
         // Read up to 255 characters from the port if they are there
-        unsigned char rx_buffer[256];
+        static unsigned char rx_buffer[256];
         int rx_length = read(uart0_filestream, (void*)rx_buffer, 255);		//Filestream, buffer to store in, number of bytes to read (max)
         if (rx_length < 0)
         {
@@ -69,11 +69,9 @@ unsigned char* uart_receive_bytes (){
         {
             //Bytes received
             rx_buffer[rx_length] = '\0';
-            return rx_buffer;
         }
     }
-    unsigned char *received_bytes = rx_buffer;
-    return received_bytes;
+    return rx_buffer;
 }
 
 void main(){
