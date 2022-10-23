@@ -69,9 +69,10 @@ unsigned char* uart_receive_bytes (){
         {
             //Bytes received
             rx_buffer[rx_length] = '\0';
+            return rx_buffer;
         }
     }
-    return rx_buffer;
+    
 }
 
 void main(){
@@ -79,5 +80,6 @@ void main(){
   uart_configure(); // Inicia as configurações do uart.
   uart_send_bytes('H'); // Transmite um byte.
   unsigned char* response = uart_receive_bytes(); // Recebe o byte enviado.
+  char c = *response;
   print(response);
 }
