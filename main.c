@@ -32,13 +32,14 @@ void uart_configure(){
     tcsetattr(uart0_filestream, TCSANOW, &options);
 }
 
-void uart_send_bytes(char command){
+void uart_send_bytes(unsigned char command,unsigned char addr){
     //----- TX BYTES -----
     unsigned char tx_buffer[20];
     unsigned char *p_tx_buffer;
 
     p_tx_buffer = &tx_buffer[0];
     *p_tx_buffer++ = command;
+    *p_tx_buffer++ = addr;
 
     if (uart0_filestream != -1)
     {
@@ -69,17 +70,18 @@ unsigned char* uart_receive_bytes (){
         {
             //Bytes received
             rx_buffer[rx_length] = '\0';
-            return rx_buffer;
+	    return rx_buffer;
         }
     }
     
 }
 
 void main(){
-  lcd(1,25,21,20,16,12); // Inicia as configurações do display lcd.
+  lcd(1,25,21,20,16,12); 
   uart_configure(); // Inicia as configurações do uart.
-  uart_send_bytes('H'); // Transmite um byte.
+  uart_send_bytes('H','A'); // Transmite um byte.
+  delay(3);
   unsigned char* response = uart_receive_bytes(); // Recebe o byte enviado.
-  char c = *response;
-  print(response);
+  unsigned char command = response[0];
+  
 }
