@@ -258,7 +258,7 @@ set_cursor:
 	
 	BX LR 
 	
-write_lcd:
+write_char:
 	MOV R9,R0
 	command R9,1
 	
