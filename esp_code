@@ -2,9 +2,9 @@ byte byte_read;
 
 void requisition_blink(int requisition_num){
   for(int i=0;i<requisition_num;i++){
-    digitalWrite(LED_BUILTIN,HIGH);
-    delay(500);
     digitalWrite(LED_BUILTIN,LOW);
+    delay(500);
+    digitalWrite(LED_BUILTIN,HIGH);
     delay(500);
   }
 }
@@ -12,30 +12,36 @@ void requisition_blink(int requisition_num){
 void setup() {
   byte_read = -1;
   pinMode(LED_BUILTIN,OUTPUT);
-  digitalWrite(LED_BUILTIN,LOW);
+  digitalWrite(LED_BUILTIN,HIGH);
   Serial.begin(9600);
 }
 
 void loop() {
   if(Serial.available() > 0){
     byte_read = Serial.read();
+    Serial.print(byte_read,HEX);
   }
-
+  
   switch(byte_read){
     case 0x03:
       requisition_blink(1);
+      byte_read = -1;
       break;
     case 0x04:
       requisition_blink(2);
+      byte_read = -1;
       break;
     case 0x05:
       requisition_blink(3);
+      byte_read = -1;
       break;
     case 0x06:
       requisition_blink(4);
+      byte_read = -1;
       break;
     case 0x07:
       requisition_blink(5);
+      byte_read = -1;
       break;
   }
 }
