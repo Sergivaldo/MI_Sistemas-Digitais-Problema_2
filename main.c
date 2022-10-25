@@ -5,6 +5,13 @@
 #include <time.h>
 #include "lcd.h"
 
+// Comandos de requisição
+#define GET_NODEMCU_SITUATION 0x03
+#define GET_ANALOG_INPUT_VALUE 0x04
+#define GET_DIGITAL_INPUT_VALUE 0x05
+#define SET_ON_NODEMCU_LED 0x06
+#define SET_OFF_NODEMCU_LED 0x07
+#define TRUE 1
 int uart0_filestream = -1;
 
 void delay(int sec){
@@ -77,11 +84,39 @@ unsigned char* uart_receive_bytes (){
 }
 
 void main(){
-  lcd(1,25,21,20,16,12); 
-  uart_configure(); // Inicia as configurações do uart.
-  uart_send_bytes('H','A'); // Transmite um byte.
-  delay(3);
-  unsigned char* response = uart_receive_bytes(); // Recebe o byte enviado.
-  unsigned char command = response[0];
-  
+	
+	lcd(1,25,21,20,16,12); 
+	uart_configure(); // Inicia as configurações do uart.
+	unsigned char input = 0;
+	while(TRUE){
+		printf("Envie um comando:");
+		printf("1 - Solicitar a situação do NODEMCU");
+		printf("2 - Solicitar o valor da entrada analógica");
+		printf("3 - Solicitar o valor de uma entrada digital");
+		printf("4 - Acender led da NODEMCU");
+		printf("5 - Apagar led do NODEMCU");
+		printf("\n\n");
+		scanf("%c",&input);
+		
+		switch(input){
+			case 1:
+				uart_send_bytes(GET_NODEMCU_SITUATION,0);
+				break;
+			case 2:
+				uart_send_bytes(GET_ANALOG_INPUT_VALUE,0);
+				break;
+			case 3:
+				uart_send_bytes(GET_DIGITAL_INPUT_VALUE,0);
+				break;
+			case 4:
+				uart_send_bytes(SET_ON_NODEMCU_LED,0);
+				break;
+			case 5:
+				uart_send_bytes(SET_OFF_NODEMCU_LED,0);
+				break;
+			default:
+				printf("Comando inválido");
+				break;
+		}
+	}
 }
