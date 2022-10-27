@@ -3,6 +3,9 @@
 #include <fcntl.h>			//Used for UART
 #include <termios.h>		//Used for UART
 #include <time.h>
+#include <sys/ioctl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 // Comandos de requisição
 #define GET_NODEMCU_SITUATION 0x03
@@ -65,7 +68,7 @@ void lcd(int e,int rs, int d7,int d6,int d5, int d4){
 
 
 
-int uart0_filestream = -1;
+int fd = -1;
 
 void delay(int sec){
     int millis = 1000*sec;
@@ -76,34 +79,32 @@ void delay(int sec){
 }
 
 void uart_configure(){
-    uart0_filestream = open("/dev/serial0", O_RDWR | O_NOCTTY | O_NDELAY);
-    if (uart0_filestream == -1)
+    fd = open("/dev/serial0", O_RDWR | O_NOCTTY | O_NDELAY);
+    if (fd == -1)
     {
         printf("Error - Unable to open UART.  Ensure it is not in use by another application\n");
     }
 
     struct termios options;
-    tcgetattr(uart0_filestream, &options);
+    tcgetattr(fd, &options);
     options.c_cflag = B9600 | CS8 | CLOCAL | CREAD;
     options.c_iflag = IGNPAR;
     options.c_oflag = 0;
     options.c_lflag = 0;
-    tcflush(uart0_filestream, TCIFLUSH);
-    tcsetattr(uart0_filestream, TCSANOW, &options);
+    tcflush(fd, TCIFLUSH);
+    tcsetattr(fd, TCSANOW, &options);
 }
 
 void uart_send_bytes(unsigned char command,unsigned char addr){
     //----- TX BYTES -----
-    unsigned char tx_buffer[20];
-    unsigned char *p_tx_buffer;
-
-    p_tx_buffer = &tx_buffer[0];
-    *p_tx_buffer++ = command;
-    *p_tx_buffer++ = addr;
-
-    if (uart0_filestream != -1)
+    unsigned char tx_buffer[3];
+    tx_buffer[0] = command;
+    tx_buffer[1] = addr;
+    tx_buffer[2] = '\0';
+	
+    if (fd != -1)
     {
-        int count = write(uart0_filestream, &tx_buffer[0], (p_tx_buffer - &tx_buffer[0]));
+        int count = write(fd, &tx_buffer[0], 3);
         if (count < 0)
         {
             printf("UART TX error\n");
@@ -111,29 +112,30 @@ void uart_send_bytes(unsigned char command,unsigned char addr){
     }
 }
 
-unsigned char* uart_receive_bytes (){
+unsigned char uart_receive_bytes (){
     
-    if (uart0_filestream != -1)
-    {
-        // Read up to 255 characters from the port if they are there
-        static unsigned char rx_buffer[256];
-        int rx_length = read(uart0_filestream, (void*)rx_buffer, 255);		//Filestream, buffer to store in, number of bytes to read (max)
-        if (rx_length < 0)
-        {
-            //An error occured (will occur if there are no bytes)
-        }
-        else if (rx_length == 0)
-        {
-            //No data waiting
-        }
-        else
-        {
-            //Bytes received
-            rx_buffer[rx_length] = '\0';
-	    return rx_buffer;
-        }
-    }
+  unsigned char  ;
+  
+  if (read (fd, &x, 1) != 1)
+    return -1 ;
+
+  return  x & 0xFF ;
     
+}
+
+int serialDataAvail ()
+{
+  int result ;
+
+  if (ioctl (fd, FIONREAD, &result) == -1)
+    return -1 ;
+
+  return result ;
+}
+
+void serialFlush ()
+{
+  tcflush (fd, TCIOFLUSH) ;
 }
 
 void main(){
@@ -166,5 +168,7 @@ void main(){
 				uart_send_bytes(SET_OFF_NODEMCU_LED,NOT_ADDRESS);
 				break;
 		}
+		
+		serialFlush();
 	}
 }  
