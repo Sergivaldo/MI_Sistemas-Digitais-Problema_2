@@ -114,12 +114,12 @@ void uart_send_bytes(unsigned char command,unsigned char addr){
 
 unsigned char uart_receive_bytes (){
     
-  unsigned char  ;
+  unsigned char value;
   
-  if (read (fd, &x, 1) != 1)
+  if (read (fd, &value, 1) != 1)
     return -1 ;
 
-  return  x & 0xFF ;
+  return  value & 0xFF ;
     
 }
 
