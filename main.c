@@ -97,14 +97,13 @@ void uart_configure(){
 
 void uart_send_bytes(unsigned char command,unsigned char addr){
     //----- TX BYTES -----
-    unsigned char tx_buffer[3];
+    unsigned char tx_buffer[2];
     tx_buffer[0] = command;
     tx_buffer[1] = addr;
-    tx_buffer[2] = '\0';
 	
     if (fd != -1)
     {
-        int count = write(fd, &tx_buffer[0], 3);
+        int count = write(fd, &tx_buffer[0], 2);
         if (count < 0)
         {
             printf("UART TX error\n");
