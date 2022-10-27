@@ -4,8 +4,6 @@
 #include <termios.h>		//Used for UART
 #include <time.h>
 #include <sys/ioctl.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 
 // Comandos de requisição
 #define GET_NODEMCU_SITUATION 0x03
