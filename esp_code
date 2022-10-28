@@ -26,8 +26,21 @@ byte byte_read;
 void set_led_on(){
   digitalWrite(LED_BUILTIN,LOW);
 
-  if(Serial.availableForWrite()){}
-  Serial.write(
+  if(Serial.availableForWrite() > 0){
+      Serial.write(LED_ON);
+      delay(300);
+  }
+  
+}
+
+void set_led_off(){
+  digitalWrite(LED_BUILTIN,HIGH);
+
+  if(Serial.availableForWrite() > 0){
+      Serial.write(LED_OFF);
+      delay(300);
+  }
+  
 }
 
 void code_uploaded(){
@@ -120,23 +133,22 @@ void loop() {
   
   switch(byte_read){
     case 0x03:
-      requisition_blink(1);
+
       byte_read = -1;
       break;
     case 0x04:
-      requisition_blink(2);
+
       byte_read = -1;
       break;
     case 0x05:
-      requisition_blink(3);
       byte_read = -1;
       break;
     case 0x06:
-      requisition_blink(4);
+      set_led_on();
       byte_read = -1;
       break;
     case 0x07:
-      requisition_blink(5);
+      set_led_off();
       byte_read = -1;
       break;
   }
