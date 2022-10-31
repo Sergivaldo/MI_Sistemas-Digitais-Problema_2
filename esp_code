@@ -10,12 +10,12 @@
 
 // Comandos de resposta
 
-#define PROBLEM_NODEMCU 0x1F;
-#define NO_PROBLEM_NODEMCU 0x00;
-#define ANALOG_INPUT_VALUE 0x01;
-#define DIGITAL_INPUT_VALUE 0x02;
-#define LED_ON 0x03;
-#define LED_OFF 0x04;
+#define PROBLEM_NODEMCU 0x1F
+#define NO_PROBLEM_NODEMCU 0x00
+#define ANALOG_INPUT_VALUE 0x01
+#define DIGITAL_INPUT_VALUE 0x02
+#define LED_ON 0x03
+#define LED_OFF 0x04
 
 // Definições de rede
 IPAddress local_IP(10, 0, 0, 109);
@@ -28,27 +28,8 @@ const char* host = "ESP-10.0.0.109";
 
 const char* ssid = STASSID;
 const char* password = STAPSK;
-
 byte byte_read;
-
-void set_led_on(){
-  digitalWrite(LED_BUILTIN,LOW);
-
-  if(Serial.availableForWrite() > 0){
-      Serial.write(LED_ON);
-      delay(300);
-  }
-}
-
-void set_led_off(){
-  digitalWrite(LED_BUILTIN,HIGH);
-
-  if(Serial.availableForWrite() > 0){
-      Serial.write(LED_OFF);
-      delay(300);
-  }
-  
-}
+byte current_response;
 
 void code_uploaded(){
   for(int i=0;i<2;i++){
@@ -57,6 +38,23 @@ void code_uploaded(){
     digitalWrite(LED_BUILTIN,HIGH);
     delay(150);
   }
+}
+
+void set_led_on(){
+   current_response = LED_ON;
+   Serial.write(current_response);  
+}
+
+void set_led_off(){
+   current_response = LED_OFF;
+   Serial.write(current_response);  
+   
+}
+
+void get_digital_input(){
+    Serial.write(DIGITAL_INPUT_VALUE);
+    Serial.write(digitalRead(D0));
+   
 }
 
 void OTA_setup(){
@@ -132,6 +130,7 @@ void setup() {
   code_uploaded();
   OTA_setup(); 
   byte_read = -1;
+  current_response = -1;
   pinMode(LED_BUILTIN,OUTPUT);
   digitalWrite(LED_BUILTIN,HIGH);
   Serial.begin(9600);
@@ -142,28 +141,29 @@ void loop() {
   
   if(Serial.available() > 0){
     byte_read = Serial.read();
-    Serial.print(byte_read,HEX);
   }
   
   switch(byte_read){
     case 0x03:
-
       byte_read = -1;
       break;
     case 0x04:
-
       byte_read = -1;
       break;
     case 0x05:
       byte_read = -1;
       break;
     case 0x06:
+      digitalWrite(LED_BUILTIN,LOW);
       set_led_on();
       byte_read = -1;
       break;
     case 0x07:
+      digitalWrite(LED_BUILTIN,HIGH);
       set_led_off();
       byte_read = -1;
       break;
   }
+  
+  
 }
