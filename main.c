@@ -3,7 +3,7 @@
 #include <fcntl.h>			//Used for UART
 #include <termios.h>		//Used for UART
 #include <time.h>
-
+#include <string.h>
 // Comandos de requisição
 #define GET_NODEMCU_SITUATION 0x03
   
@@ -54,6 +54,12 @@ void lcd(int e,int rs, int d7,int d6,int d5, int d4){
 }
 
 
+void print_lcd(unsigned char c[]){
+        int len = strlen(c);
+        for(int i=0;i<len;i++){
+                write_char(c[i]);
+        }
+}
 
 int uart0_filestream = -1;
 
@@ -100,13 +106,14 @@ void uart_send_bytes(unsigned char command,unsigned char addr){
     }
 }
 
-void uart_receive_bytes (){
-
+unsigned char*  uart_receive_bytes (){
+    // Read up to 255 characters from the port if they are there
+    static unsigned char rx_buffer[100];
+    char response_command = -1;
     if (uart0_filestream != -1)
     {
-        // Read up to 255 characters from the port if they are there
-        static unsigned char rx_buffer[256];
-        int rx_length = read(uart0_filestream, (void*)rx_buffer, 255);		//Filestream, buffer to store in, number of bytes to read (max)
+        
+        int rx_length = read(uart0_filestream, (void*)rx_buffer, 100);		//Filestream, buffer to store in, number of bytes to read (max)
         if (rx_length < 0)
         {
             //An error occured (will occur if there are no bytes)
@@ -119,16 +126,30 @@ void uart_receive_bytes (){
         {
             //Bytes received
             rx_buffer[rx_length] = '\0';
-	    printf("%x",rx_buffer[0]);
+	    return rx_buffer;
         }
     }
-
+	response_command = rx_buffer[0];
+	clear_lcd();
+	switch(response_command){
+		case 0x02:
+			print_lcd("Valor: ");
+			print_lcd(rx_buffer[1]);
+			break;
+		case 0x03:
+			print_lcd("Led ligado.");
+			break;
+		case 0x04:
+			print_lcd("Led Desligado");
+			break;
+	}	
 }
 
 void main(){
   lcd(1,25,21,20,16,12); 
   uart_configure(); // Inicia as configurações do uart.
   int input = 0;
+  unsigned char* buffer_response;
 	while(TRUE){
 		printf("Envie um comando:\n");
 		printf("1 - Solicitar a situação do NODEMCU\n");
@@ -147,15 +168,21 @@ void main(){
 				break;
 			case 3:
 				uart_send_bytes(GET_DIGITAL_INPUT_VALUE,NOT_ADDRESS);
+				delay(2);
+				uart_receive_bytes();
 				break;
 			case 4:
 				uart_send_bytes(SET_ON_NODEMCU_LED,NOT_ADDRESS);
+				delay(2);
 				uart_receive_bytes();
 				break;
 			case 5:
 				uart_send_bytes(SET_OFF_NODEMCU_LED,NOT_ADDRESS);
+				delay(2);
 				uart_receive_bytes();
 				break;
 		}
+     
+                
 	}
 }  
