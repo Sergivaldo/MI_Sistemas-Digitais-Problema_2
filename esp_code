@@ -30,6 +30,8 @@ const char* ssid = STASSID;
 const char* password = STAPSK;
 byte byte_read;
 byte current_response;
+float analog_value;
+byte digital_value;
 
 void code_uploaded(){
   for(int i=0;i<2;i++){
@@ -41,20 +43,26 @@ void code_uploaded(){
 }
 
 void set_led_on(){
+   digitalWrite(LED_BUILTIN,LOW);
    current_response = LED_ON;
    Serial.write(current_response);  
 }
 
 void set_led_off(){
+   digitalWrite(LED_BUILTIN,HIGH);
    current_response = LED_OFF;
    Serial.write(current_response);  
    
 }
 
 void get_digital_input(){
-    Serial.write(DIGITAL_INPUT_VALUE);
-    Serial.write(digitalRead(D0));
-   
+    digital_value = digitalRead(D0);
+    Serial.write(digital_value);
+}
+
+void get_analog_input(){
+    analog_value = analogRead(A0) * (3.3/1023.0);
+    Serial.print(analog_value);  
 }
 
 void OTA_setup(){
@@ -148,18 +156,18 @@ void loop() {
       byte_read = -1;
       break;
     case 0x04:
+      get_analog_input();
       byte_read = -1;
       break;
-    case 0x05:
+    case 0x05:Q
+      get_digital_input();
       byte_read = -1;
       break;
     case 0x06:
-      digitalWrite(LED_BUILTIN,LOW);
       set_led_on();
       byte_read = -1;
       break;
     case 0x07:
-      digitalWrite(LED_BUILTIN,HIGH);
       set_led_off();
       byte_read = -1;
       break;
