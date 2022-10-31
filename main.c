@@ -4,6 +4,8 @@
 #include <termios.h>		//Used for UART
 #include <time.h>
 #include <string.h>
+#include <sys/ioctl.h>
+#include <stdint.h>
 // Comandos de requisição
 #define GET_NODEMCU_SITUATION 0x03
   
@@ -20,8 +22,6 @@ extern void lcd_init(void);
 extern void set_out(void);
 extern void clear_lcd(void);
 extern void write_char(unsigned char c);
-extern void set_cursor(int pos);
-extern void cgram_addr(int local);
 extern void map_e(int reg,int pin_offset, int pin_num);
 extern void map_rs(int reg,int pin_offset, int pin_num);
 extern void map_d7(int reg,int pin_offset, int pin_num);
@@ -87,69 +87,48 @@ void uart_configure(){
     tcsetattr(uart0_filestream, TCSANOW, &options);
 }
 
-void uart_send_bytes(unsigned char command,unsigned char addr){
-    //----- TX BYTES -----
-    unsigned char tx_buffer[20];
-    unsigned char *p_tx_buffer;
-
-    p_tx_buffer = &tx_buffer[0];
-    *p_tx_buffer++ = command;
-    *p_tx_buffer++ = addr;
-
-    if (uart0_filestream != -1)
-    {
-        int count = write(uart0_filestream, &tx_buffer[0], (p_tx_buffer - &tx_buffer[0]));
-        if (count < 0)
-        {
-            printf("UART TX error\n");
-        }
-    }
+void serialPutchar (const unsigned char c)
+{
+  write (uart0_filestream, &c, 1) ;
 }
 
-unsigned char*  uart_receive_bytes (){
-    // Read up to 255 characters from the port if they are there
+unsigned char serialGetchar ()
+{
+  uint8_t value ;
+
+  if (read (uart0_filestream, &value, 1) != 1)
+    return -1 ;
+
+  return ((unsigned char)value) & 0xFF ;
+}
+
+void serialGetS(){
     static unsigned char rx_buffer[100];
     char response_command = -1;
     if (uart0_filestream != -1)
     {
         
-        int rx_length = read(uart0_filestream, (void*)rx_buffer, 100);		//Filestream, buffer to store in, number of bytes to read (max)
-        if (rx_length < 0)
-        {
-            //An error occured (will occur if there are no bytes)
-        }
-        else if (rx_length == 0)
-        {
-            //No data waiting
-        }
-        else
-        {
-            //Bytes received
-            rx_buffer[rx_length] = '\0';
-	    return rx_buffer;
-        }
-    }
-	response_command = rx_buffer[0];
-	clear_lcd();
-	switch(response_command){
-		case 0x02:
-			print_lcd("Valor: ");
-			print_lcd(rx_buffer[1]);
-			break;
-		case 0x03:
-			print_lcd("Led ligado.");
-			break;
-		case 0x04:
-			print_lcd("Led Desligado");
-			break;
-	}	
+		int rx_length = read(uart0_filestream, (void*)rx_buffer, 100);		//Filestream, buffer to store in, number of bytes to read (max)
+		if (rx_length < 0)
+		{
+		    //An error occured (will occur if there are no bytes)
+		}
+		else if (rx_length == 0)
+		{
+		    //No data waiting
+		}
+		else
+		{
+		    //Bytes received
+		    rx_buffer[rx_length] = '\0';
+		    printf("%s",rx_buffer);
+		}
+	}
 }
 
-void main(){
-  lcd(1,25,21,20,16,12); 
+void main(){ 
   uart_configure(); // Inicia as configurações do uart.
   int input = 0;
-  unsigned char* buffer_response;
 	while(TRUE){
 		printf("Envie um comando:\n");
 		printf("1 - Solicitar a situação do NODEMCU\n");
@@ -161,25 +140,27 @@ void main(){
 		scanf("%d",&input);
 		switch(input){
 			case 1:
-				uart_send_bytes(GET_NODEMCU_SITUATION,NOT_ADDRESS);
+				serialPutchar(GET_NODEMCU_SITUATION);
 				break;
 			case 2:
-				uart_send_bytes(GET_ANALOG_INPUT_VALUE,NOT_ADDRESS);
+				serialPutchar(GET_ANALOG_INPUT_VALUE);
+				delay(2);
+				serialGetS();
 				break;
 			case 3:
-				uart_send_bytes(GET_DIGITAL_INPUT_VALUE,NOT_ADDRESS);
+				serialPutchar(GET_DIGITAL_INPUT_VALUE);
 				delay(2);
-				uart_receive_bytes();
+				serialGetchar();
 				break;
 			case 4:
-				uart_send_bytes(SET_ON_NODEMCU_LED,NOT_ADDRESS);
+				serialPutchar(SET_ON_NODEMCU_LED);
 				delay(2);
-				uart_receive_bytes();
+				serialGetchar();
 				break;
 			case 5:
-				uart_send_bytes(SET_OFF_NODEMCU_LED,NOT_ADDRESS);
+				serialPutchar(SET_OFF_NODEMCU_LED);
 				delay(2);
-				uart_receive_bytes();
+				serialGetchar();
 				break;
 		}
      
