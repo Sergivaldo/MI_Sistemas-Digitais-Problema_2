@@ -40,8 +40,6 @@ Uma vez que existe um makefile adequado, cada vez que alguns arquivos de origem 
 
 **GDB**: É o depurador de nível de fonte GNU que é padrão em sistemas linux (e muitos outros unix). O propósito de um depurador como o GDB é permitir ver o que está acontecendo “dentro” de outro programa enquanto ele é executado, ou o que outro programa estava fazendo no momento em que travou. Ele pode ser usado tanto para programas escritos em linguagens de alto nível como C e C++ quanto para programas de código assembly.
 
-**QEMU** e **CPUlator**: O ***QEMU*** implementa um emulador de processador, permitindo uma virtualização completa de um sistema PC dentro de outro. O ***CPUlator*** também é um emulador online de processador que conta ainda com a simulação de alguns periféricos como leds, botões e dip switches. Os dois foram utilizados para simular a arquitetura ARM. No primeiro foi utilizado uma simulação do ARMv6, a mesma arquitetura da máquina utilizada, o que ajudou bastante em pequenos códigos que não necessitavam da utilização das GPIOs. O segundo emula o ARMv7, apesar de ser uma arquitetura diferente da utilizada nos testes, foi bem útil para práticar o uso da linguagem.
-
 
 <a id="secao2"></a>
 ## Informações dos computadores usados para os testes
