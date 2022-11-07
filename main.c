@@ -15,7 +15,14 @@
 #define SET_OFF_NODEMCU_LED 0x07
 #define TRUE 1
 // Endereços
-#define NOT_ADDRESS 0
+#define ADDR_D0 0xD0
+#define ADDR_D1 0xD1
+#define ADDR_D2 0xD2
+#define ADDR_D3 0xD3
+#define ADDR_D4 0xD4
+#define ADDR_D5 0xD5
+#define ADDR_D6 0xD6
+#define ADDR_D7 0xD7
 
 extern void memory_map(void);
 extern void init_lcd(void);
@@ -38,8 +45,7 @@ void print_lcd(unsigned char c[]){
 
 int uart0_filestream = -1;
 
-void delay(int sec){
-    int millis = sec * 1000;
+void delay(int millis){
     clock_t start_time = clock();
     while (clock() < start_time + millis)
     {}
@@ -62,43 +68,53 @@ void uart_configure(){
     tcsetattr(uart0_filestream, TCSANOW, &options);
 }
 
+void serialFlush ()
+{
+  tcflush (uart0_filestream, TCIOFLUSH) ;
+}
+
 void serialPutchar (const unsigned char c)
 {
   write (uart0_filestream, &c, 1) ;
 }
 
-unsigned char serialGetchar()
-{
-  uint8_t value ;
-
-  if (read (uart0_filestream, &value, 1) != 1)
-    return -1 ;
-
-  return ((int) value) & 0xFF;
+void serialGetString(){
+	static unsigned char rx_buffer[6];
+	int rx_length = -1;
+    	if (uart0_filestream != -1){
+		while(rx_length == -1){
+			rx_length = read(uart0_filestream, (void*)rx_buffer, 6);		//Filestream, buffer to store in, number of bytes to read (max)
+			if (rx_length == 0)
+			{
+			    printf("Não há bytes para serem lidos.");
+			}
+			
+		}
+		clear_lcd();
+		print_lcd("Analogico: ");
+		print_lcd(rx_buffer);
+	}
 }
 
-void serialGetString(){
-    static unsigned char rx_buffer[100];
-    char response_command = -1;
+
+unsigned char serialGetChar(){
+    static unsigned char rx_buffer[1];
+    int rx_length = -1;
     if (uart0_filestream != -1)
     {
-        
-		int rx_length = read(uart0_filestream, (void*)rx_buffer, 100);		//Filestream, buffer to store in, number of bytes to read (max)
-		if (rx_length < 0)
-		{
-		    printf("Ocorreu um erro.");
-		}
-		else if (rx_length == 0)
+	while(rx_length == -1){
+		rx_length = read(uart0_filestream, (void*)rx_buffer, 1);		//Filestream, buffer to store in, number of bytes to read (max)
+		if (rx_length == 0)
 		{
 		    printf("Não há bytes para serem lidos.");
 		}
-		else
-		{
-		    //Bytes received
-		    rx_buffer[rx_length] = '\0';
-		    print_lcd(rx_buffer);
-		}
+		
 	}
+		    clear_lcd();
+		    print_lcd("Digital: ");
+		    write_char(0x30 + rx_buffer[0]);
+	}
+	
 }
 
 void main(){ 
@@ -120,23 +136,24 @@ void main(){
 				serialPutchar(GET_NODEMCU_SITUATION);
 				break;
 			case 2:
+				serialFlush();
 				serialPutchar(GET_ANALOG_INPUT_VALUE);
-				delay(2);
-				clear_lcd();
-				print_lcd("Analógico: ");
 				serialGetString();
 				break;
 			case 3:
+				serialFlush();
 				serialPutchar(GET_DIGITAL_INPUT_VALUE);
-				delay(2);
-			        printf("%d",serialGetchar());
+				serialPutchar(ADDR_D0);
+			        serialGetChar();
 				break;
 			case 4:
+				serialFlush();
 				serialPutchar(SET_ON_NODEMCU_LED);
 				clear_lcd();
 				print_lcd("Led Ligado");
 				break;
 			case 5:
+				serialFlush();
 				serialPutchar(SET_OFF_NODEMCU_LED);
 				clear_lcd();
 				print_lcd("Led Desligado");
