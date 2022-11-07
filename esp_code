@@ -17,6 +17,19 @@
 #define LED_ON 0x03
 #define LED_OFF 0x04
 
+// Endereço pino
+
+#define ADDR_D0 0xD0
+#define ADDR_D1 0xD1
+#define ADDR_D2 0xD2
+#define ADDR_D3 0xD3
+#define ADDR_D4 0xD4
+#define ADDR_D5 0xD5
+#define ADDR_D6 0xD6
+#define ADDR_D7 0xD7
+
+
+
 // Definições de rede
 IPAddress local_IP(10, 0, 0, 109);
 IPAddress gateway(10, 0, 0, 1);
@@ -30,9 +43,9 @@ const char* ssid = STASSID;
 const char* password = STAPSK;
 byte byte_read;
 byte current_response;
-float analog_value;
+int analog_value;
 byte digital_value;
-
+byte sensor_addr;
 void code_uploaded(){
   for(int i=0;i<2;i++){
     digitalWrite(LED_BUILTIN,LOW);
@@ -55,13 +68,13 @@ void set_led_off(){
    
 }
 
-void get_digital_input(){
-    digital_value = digitalRead(D0);
+void get_digital_input(byte port){
+    digital_value = digitalRead(port);
     Serial.write(digital_value);
 }
 
 void get_analog_input(){
-    analog_value = analogRead(A0) * (3.3/1023.0);
+   analog_value = (int)analogRead(A0);
     Serial.print(analog_value);  
 }
 
@@ -148,7 +161,9 @@ void loop() {
   ArduinoOTA.handle();
   
   if(Serial.available() > 0){
-    byte_read = Serial.read();
+    String str = Serial.readString();
+    byte_read = str[0];
+    sensor_addr = str[1];
   }
   
   switch(byte_read){
@@ -159,8 +174,34 @@ void loop() {
       get_analog_input();
       byte_read = -1;
       break;
-    case 0x05:Q
-      get_digital_input();
+    case 0x05:
+      switch(sensor_addr){
+        case ADDR_D0:
+          get_digital_input(D0);
+          break;
+        case ADDR_D1:
+          get_digital_input(D1);
+          break;
+        case ADDR_D2:
+          get_digital_input(D2);
+          break;
+        case ADDR_D3:
+          get_digital_input(D3);
+          break;
+        case ADDR_D4:
+          get_digital_input(D4);
+          break;
+        case ADDR_D5:
+          get_digital_input(D5);
+          break;
+        case ADDR_D6:
+          get_digital_input(D6);
+          break;
+        case ADDR_D7:
+          get_digital_input(D7);
+          break;  
+      }
+      
       byte_read = -1;
       break;
     case 0x06:
