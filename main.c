@@ -79,43 +79,42 @@ void serialPutchar (const unsigned char c)
 }
 
 void serialGetString(){
-	static unsigned char rx_buffer[6];
-	int rx_length = -1;
+	
     	if (uart0_filestream != -1){
+	    	unsigned char rx_buffer[10];
+		int rx_length = -1;
 		while(rx_length == -1){
-			rx_length = read(uart0_filestream, (void*)rx_buffer, 6);		//Filestream, buffer to store in, number of bytes to read (max)
+			rx_length = read(uart0_filestream, (void*)rx_buffer, 10);		//Filestream, buffer to store in, number of bytes to read (max)
 			if (rx_length == 0)
 			{
 			    printf("Não há bytes para serem lidos.");
 			}
 			
 		}
+		printf("%s",rx_buffer);
 		clear_lcd();
 		print_lcd("Analogico: ");
 		print_lcd(rx_buffer);
 	}
 }
 
-
 unsigned char serialGetChar(){
-    static unsigned char rx_buffer[1];
     int rx_length = -1;
     if (uart0_filestream != -1)
     {
+    	unsigned char rx_buffer[1];
 	while(rx_length == -1){
 		rx_length = read(uart0_filestream, (void*)rx_buffer, 1);		//Filestream, buffer to store in, number of bytes to read (max)
 		if (rx_length == 0)
 		{
 		    printf("Não há bytes para serem lidos.");
 		}
-		
 	}
-		    clear_lcd();
-		    print_lcd("Digital: ");
+		    
 		    write_char(0x30 + rx_buffer[0]);
 	}
-	
 }
+
 
 void main(){ 
   lcd();
@@ -133,6 +132,7 @@ void main(){
 		scanf("%d",&input);
 		switch(input){
 			case 1:
+				serialFlush();
 				serialPutchar(GET_NODEMCU_SITUATION);
 				break;
 			case 2:
@@ -141,10 +141,62 @@ void main(){
 				serialGetString();
 				break;
 			case 3:
+				printf("Informe o endereço do sensor\n[0] Sensor D0\n[1] Sensor D1\n[2] Sensor D2\n[3] Sensor D0\n[3] Sensor D3\n[4] Sensor D4\n[5] Sensor D5\n[6] Sensor D6\n[7] Sensor D7");
+				int addr = 10;
+				scanf("%d", &addr);
 				serialFlush();
 				serialPutchar(GET_DIGITAL_INPUT_VALUE);
-				serialPutchar(ADDR_D0);
-			        serialGetChar();
+				switch (addr){
+					case 0:
+					
+						serialPutchar(ADDR_D0);
+						clear_lcd();
+						print_lcd("Sensor D0:");
+						serialGetChar();
+						break;
+					case 1:
+						serialPutchar(ADDR_D1);
+						clear_lcd();
+						print_lcd("Sensor D1:");
+						serialGetChar();
+						break;
+					case 2:
+						serialPutchar(ADDR_D2);
+						clear_lcd();
+						print_lcd("Sensor D2:");
+						serialGetChar();
+						break;
+					case 3:
+						serialPutchar(ADDR_D3);
+						clear_lcd();
+						print_lcd("Sensor D3:");
+						serialGetChar();
+						break;
+					case 4:
+						serialPutchar(ADDR_D4);
+						clear_lcd();
+						print_lcd("Sensor D4:");
+						serialGetChar();
+						break;
+					case 5:
+						serialPutchar(ADDR_D5);
+						clear_lcd();
+						print_lcd("Sensor D5:");
+						serialGetChar();
+						break;
+					case 6:
+						serialPutchar(ADDR_D6);
+						clear_lcd();
+						print_lcd("Sensor D6:");
+						serialGetChar();
+						break;
+					case 7:
+						serialPutchar(ADDR_D7);
+						clear_lcd();
+						print_lcd("Sensor D7:");
+						serialGetChar();
+						break;
+				}
 				break;
 			case 4:
 				serialFlush();
