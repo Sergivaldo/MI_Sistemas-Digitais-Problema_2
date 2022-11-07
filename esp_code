@@ -43,7 +43,6 @@ const char* ssid = STASSID;
 const char* password = STAPSK;
 byte byte_read;
 byte current_response;
-int analog_value;
 byte digital_value;
 byte sensor_addr;
 void code_uploaded(){
@@ -74,7 +73,7 @@ void get_digital_input(byte port){
 }
 
 void get_analog_input(){
-   analog_value = (int)analogRead(A0);
+   int analog_value = analogRead(A0);
     Serial.print(analog_value);  
 }
 
