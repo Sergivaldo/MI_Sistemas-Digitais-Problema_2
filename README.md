@@ -192,6 +192,9 @@ https://user-images.githubusercontent.com/72475500/200980204-b9e2c135-1d64-482a-
 
 https://user-images.githubusercontent.com/72475500/200980336-950cd62f-76fc-4973-b8d1-6d37c85ff6ad.mp4
 
+Pode-se observar nos testes 100% do funcionamento da comunicação serial ao pedir o valor do sensor digital ou que o led da NODEMCU seja aceso ou apagado. 
+Entretanto, no sensor analógico os dados não chegam corretamente, apesar de mudarem ao mexer no potênciometro como esperado.
+
 <a id="secao9"></a>
 ## Limitações do projeto
 
