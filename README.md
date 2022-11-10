@@ -1,9 +1,9 @@
 <a id="inicio"></a>
 ## Mi Sistemas digitais - Problema 2
 
+Equipamentos microprocessados ou microcomputadores vêm equipados com um recurso de comunicação que propicia a troca de dados entre dois sistemas. Este tipo de comunicação pode tanto ser via serial, os dados são enviados via paralela, ou via sequencial em que os dados são enviados como o próprio nome diz de forma serial. Para se fazer um sistema comunicar-se com outro de forma serial, pode ser utilizado a comunicação UART (Universal Asynchronous Receiver Transmitter) que é um tipo de protocolo de comunicação serial; usado principalmente para troca de dados de curta distância, baixa velocidade e baixo custo entre o computador e os periféricos. Esse recurso permite que diversos dispositivos sejamm conectados entre si, como por exemplo o uso de modems com computadores através da conexão ehernet ou instrumentos musicais com a comunicação serial MIDI.
 
-
-O Problema 2 da disciplina de sistemas digitais consiste em uma aplicação que faz o uso de até 8 sensores genéricos através da nodeMCU e faz a comunicação serial com a RaspBerry Pi, onde está solicita dados dos sensores e os exibe em um display LCD. 
+O Problema 2 da disciplina de sistemas digitais consiste em uma aplicação que faz o uso de até 8 sensores genéricos através da nodeMCU e faz a comunicação serial com a RaspBerry Pi utilizando do protocolo UART, onde está solicita dados dos sensores e os exibe em um display LCD. 
 
 Este documento mostra os detalhes de implementação de um protótipo de
 sistema de sensoriamento genérico.
