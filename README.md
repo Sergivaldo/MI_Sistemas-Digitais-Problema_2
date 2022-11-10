@@ -20,13 +20,17 @@ Esse sistema é o prosseguimento do protótipo do sistema digital baseado em um 
 
 &nbsp;&nbsp;&nbsp;[**3.** Configuração e instalação do projeto](#secao3)
 
-&nbsp;&nbsp;&nbsp;[**4.** Testes realizados](#secao4)
+&nbsp;&nbsp;&nbsp;[**4.** Diagrama do projeto](#secao4)
 
-&nbsp;&nbsp;&nbsp;[**5.** Testes realizados](#secao5)
+&nbsp;&nbsp;&nbsp;[**5.** Protocolo UART](#secao5)
 
-&nbsp;&nbsp;&nbsp;[**6.** Limitações da solução desenvolvida](#secao6)
+&nbsp;&nbsp;&nbsp;[**6.** Endereços dos sensores](#secao6)
 
-&nbsp;&nbsp;&nbsp;[**7.** Materiais utilizados no desenvolvimento](#secao7)
+&nbsp;&nbsp;&nbsp;[**7.** Metodologias e técnicas aplicadas](#secao7)
+
+&nbsp;&nbsp;&nbsp;[**8.** Testes realizados](#secao8)
+
+&nbsp;&nbsp;&nbsp;[**9.** Limitações do projeto](#secao9)
 
 <a id="secao1"></a>
 ## Ferramentas utilizadas
@@ -82,7 +86,7 @@ que a aplicação possa ser iniciada.
 Para iniciar o programa, use a seguinte instrução no terminal:
 
 &nbsp;&nbsp;&nbsp;`sudo ./main`
-
+<a id="secao4"></a>
 ## Diagrama do projeto
 
 ![diagram p2](https://user-images.githubusercontent.com/72475500/200979058-db06a910-255c-445c-ab49-a41a127fd8f8.jpg)
@@ -91,7 +95,7 @@ Conforme a figura acima, o projeto foi montado da seguinte forma, a raspberry en
 da NodeMCU, esta irá ler os sensores analógicos, verificar seus estados ou então acender o led que vem embutido nela. Após isso, através da sua porta TX, enviará um código de resposta informando a Raspberry qual tarefa foi executada.
 
 
-<a id=""></a>
+<a id="secao5"></a>
 ## Protocolo UART
 
 Para fazer a comunicação serial entre as placas, foi feito um protocolo de comunicação com comandos de requisição e resposta. Dessa forma,
@@ -118,6 +122,7 @@ a Raspberry irá requisitar algo a NodeMCU que executará o que foi pedido e env
 |    0x03    	|            Led ligado           	|
 |    0x04    	|          Led Desligado          	|
 
+<a id="secao6"></a>
 ## Endereços dos sensores 
 
 Visto que o sistema deve ser capaz de suportar diversos sensores, uma forma de ter acesso a cada um destes foi fazendo endereços 
@@ -135,6 +140,7 @@ especificar o endereço do sensor que está relacionado com uma porta digital. F
 |     D6     	|     0xD6     	|
 |     D7     	|     0xD7     	|
 
+<a id="secao7"></a>
 ## Metodologias e Técnicas aplicadas
 
 Para fazer a utilização da comunicação serial das placas, foi necessário utilizar de alguns recursos, como por exemplo
@@ -171,13 +177,18 @@ while(rx_length == -1){
   }
  
 ```
-
+<a id="secao8"></a>
 ## Testes realizados
 
 #### Teste do led da NODEMCU
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/7k6Zos6qosA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+https://user-images.githubusercontent.com/72475500/200979465-37ce87f7-faf1-4883-b7c3-382f610b28cc.mp4
 
+#### Teste do sensor digital
+
+#### Teste do sensor analógico
+
+<a id="secao9"></a>
 ## Limitações do projeto
 
 #### O sistema pode ficar em loop infinito se não houver dados para serem lidos
