@@ -83,6 +83,14 @@ Para iniciar o programa, use a seguinte instrução no terminal:
 
 &nbsp;&nbsp;&nbsp;`sudo ./main`
 
+## Diagrama do projeto
+
+![diagram p2](https://user-images.githubusercontent.com/72475500/200978196-0a6bd9f7-d8fa-4709-a748-86023e688446.jpg)
+
+Conforme a figura acima, o projeto foi montado da seguinte forma, a raspberry enviará os comandos de requisição através da porta TX que seram recebidos na porta RX 
+da NodeMCU, esta irá ler os sensores analógicos, verificar seus estados ou então acender o led que vem embutido nela. Após isso, através da sua porta TX, enviará um código de resposta informando a Raspberry qual tarefa foi executada.
+
+
 <a id=""></a>
 ## Protocolo UART
 
