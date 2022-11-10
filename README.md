@@ -10,8 +10,6 @@ sistema de sensoriamento genérico.
 
 Esse sistema é o prosseguimento do protótipo do sistema digital baseado em um processador ARM.
 
-Nesta etapa, o projeto consiste em um sistema que detecta até 32 sensores genéricos através da nodeMCU e faz a comunicação serial com a RaspBerry para fazer a exibição das informações no display LCD.
-
 ### Membros do grupo
   **Jacob Santana**<br>
   **Sergivaldo Junior**
