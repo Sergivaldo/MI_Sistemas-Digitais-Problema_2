@@ -172,5 +172,12 @@ Se não tiver dados para serem recebidos o sistema fica em loop infinito até re
 ler até que tenha informações disponíveis para serem consumidas. Esse pode ser considerado um problema bastante crítico, pois, caso essa situação ocorra
 o programa irá ficar preso e nada mais será executado.
 
+#### Valor aleatório vindo da requisição do sinal analógico
 
+Por mais que a comunicação serial funcione e ao mover o potênciometro o valor mude, o dado que está vindo não é completo, somente um dígito 
+vem correto, sendo o resto caracteres aleatórios. Portanto, nesta versão do protótipo não é possível obter o valor real do sensor analógico.
 
+#### NodeMCU não retorna o status de funcionamento dos sensores
+
+Outro limitação presente no programa é a falta de um retorno do status da NodeMCU indicando se os sensores estão funcionando corretamente ou não.
+Desta forma, caso o sensor esteja com problema ou tiver algum sensor desconectado, o sistema não consegue identificar.
