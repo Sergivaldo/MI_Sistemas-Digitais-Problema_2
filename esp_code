@@ -45,6 +45,8 @@ byte byte_read;
 byte current_response;
 byte digital_value;
 byte sensor_addr;
+
+// Função para sinalizar quando for concluida o upload do código na nodeMCU
 void code_uploaded(){
   for(int i=0;i<2;i++){
     digitalWrite(LED_BUILTIN,LOW);
@@ -54,12 +56,14 @@ void code_uploaded(){
   }
 }
 
+//Função para acender o LED
 void set_led_on(){
    digitalWrite(LED_BUILTIN,LOW);
    current_response = LED_ON;
    Serial.write(current_response);  
 }
 
+//Função para apagar o LED
 void set_led_off(){
    digitalWrite(LED_BUILTIN,HIGH);
    current_response = LED_OFF;
@@ -67,16 +71,19 @@ void set_led_off(){
    
 }
 
+//Pegar o valor digital da entrada informada por "port"
 void get_digital_input(byte port){
     digital_value = digitalRead(port);
     Serial.write(digital_value);
 }
 
+// Pegar o valor da entrada analógica
 void get_analog_input(){
    int analog_value = analogRead(A0);
     Serial.print(analog_value);  
 }
 
+// Configurações para realizar o upload do código via wifi
 void OTA_setup(){
   
   Serial.begin(115200);
@@ -86,8 +93,6 @@ void OTA_setup(){
   if (!WiFi.config(local_IP, gateway, subnet)) {
     Serial.println("STA Failed to configure");
   }
-
-
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
@@ -156,24 +161,35 @@ void setup() {
   Serial.begin(9600);
 }
 
+
 void loop() {
   ArduinoOTA.handle();
   
+  // Recebe os bytes da comunicação UART
   if(Serial.available() > 0){
     String str = Serial.readString();
-    byte_read = str[0];
-    sensor_addr = str[1];
+    byte_read = str[0];   // Protocolo
+    sensor_addr = str[1]; // Endereço do sensor
   }
   
+  // Verificar o protocolo enviado
   switch(byte_read){
+
+    // Status da nodeMCU
     case 0x03:
       byte_read = -1;
       break;
+
+    // Valor da entrada analógica
     case 0x04:
       get_analog_input();
       byte_read = -1;
       break;
+
+    // Valor da entrada digital
     case 0x05:
+
+      // Pegar o valor da entrada digital solicitada pelo endereço enviado
       switch(sensor_addr){
         case ADDR_D0:
           get_digital_input(D0);
@@ -203,15 +219,17 @@ void loop() {
       
       byte_read = -1;
       break;
+
+    // Acender led
     case 0x06:
       set_led_on();
       byte_read = -1;
       break;
+
+    // Apagar led
     case 0x07:
       set_led_off();
       byte_read = -1;
       break;
   }
-  
-  
 }
