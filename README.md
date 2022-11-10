@@ -133,7 +133,44 @@ Para fazer a utilização da comunicação serial das placas, foi necessário ut
 a utilização da IDE do arduino para fazer a leitura das portas digitais e analógicas da NodeMCU, além do descarregamento do código na placa. Ainda foi utilizada
 também a biblioteca **Serial** para que pudesse ser feita a transmissão de dados da NodeMCU para a RaspBerry Pi assim como o recebimento dos códigos de requisição para executar as tarefas.
 
-Na Raspberry Pi também foi necessário fazer o uso de bibliotecas para utilizar as portas seriais do dispositivo, para isso foi utilizada a **Termios**, com ela foi possível configurar o baudrate, quantidade de bits que seriam transmitidos e também fazer a escrita e leitura de dados na porta.
+Na Raspberry Pi também foi necessário fazer o uso de bibliotecas para utilizar as portas seriais do dispositivo, para isso foi utilizada a **termios**, com ela foi possível configurar o baudrate, quantidade de bits que seriam transmitidos e também fazer a escrita e leitura de dados na porta.
 
 Para que a Raspberry pudesse receber um dado, foi utilizado de um loop onde este manteria a placa sempre lendo algo da porta serial até que um dado fosse recebido, tentando dessa forma garantir que caso algum dado seja enviado ele será lido. Na NodeMCU foi utilizado de uma técnica parecida, onde antes de tentar ler alguma informação, primeiramente é verificado se existe algum dado disponível para isso.
+
+
+#### Leitura na porta serial da Raspberry Pi
+
+```
+// Lê a porta serial até que um dado seja recebido
+while(rx_length == -1){
+			rx_length = read(uart0_filestream, (void*)rx_buffer, 10);	
+			if (rx_length == 0)
+			{
+			    printf("Não há bytes para serem lidos.");
+			}
+			
+		}
+```
+
+#### Leitura na porta serial da NodeMCU
+
+```
+// Lê a porta serial se tiver algum dado disponível 
+  if(Serial.available() > 0){
+    String str = Serial.readString();
+    byte_read = str[0];
+    sensor_addr = str[1];
+  }
+ 
+```
+
+## Limitações do projeto
+
+#### O sistema pode ficar em loop infinito se não houver dados para serem lidos
+
+Se não tiver dados para serem recebidos o sistema fica em loop infinito até receber algo na porta serial, já que a aplicação não irá parar de 
+ler até que tenha informações disponíveis para serem consumidas. Esse pode ser considerado um problema bastante crítico, pois, caso essa situação ocorra
+o programa irá ficar preso e nada mais será executado.
+
+
 
