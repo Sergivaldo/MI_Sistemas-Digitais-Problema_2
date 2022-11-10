@@ -29,12 +29,14 @@ extern void init_lcd(void);
 extern void clear_lcd(void);
 extern void write_char(unsigned char c);
 
+// Inicialização do LCD
 void lcd(){
 	memory_map();
 	init_lcd();
 	clear_lcd();
 }
 
+// Printar uma string no LCD
 void print_lcd(unsigned char c[]){
         int len = strlen(c);
         
@@ -45,12 +47,14 @@ void print_lcd(unsigned char c[]){
 
 int uart0_filestream = -1;
 
+// Delay
 void delay(int millis){
     clock_t start_time = clock();
     while (clock() < start_time + millis)
     {}
 }
 
+// Configuração da comunicação UART
 void uart_configure(){
     uart0_filestream = open("/dev/serial0", O_RDWR | O_NOCTTY | O_NDELAY);
     if (uart0_filestream == -1)
@@ -68,16 +72,19 @@ void uart_configure(){
     tcsetattr(uart0_filestream, TCSANOW, &options);
 }
 
+// Limpar a entrada da comunicação serial 
 void serialFlush ()
 {
   tcflush (uart0_filestream, TCIOFLUSH) ;
 }
 
+// Enviar um byte pela UART
 void serialPutchar (const unsigned char c)
 {
   write (uart0_filestream, &c, 1) ;
 }
 
+// Receber uma string pela UART
 void serialGetString(){
 	
     	if (uart0_filestream != -1){
@@ -89,7 +96,6 @@ void serialGetString(){
 			{
 			    printf("Não há bytes para serem lidos.");
 			}
-			
 		}
 		printf("%s",rx_buffer);
 		clear_lcd();
@@ -98,6 +104,7 @@ void serialGetString(){
 	}
 }
 
+// Receber um byte pela UART
 unsigned char serialGetChar(){
     int rx_length = -1;
     if (uart0_filestream != -1)
@@ -110,7 +117,6 @@ unsigned char serialGetChar(){
 		    printf("Não há bytes para serem lidos.");
 		}
 	}
-		    
 		    write_char(0x30 + rx_buffer[0]);
 	}
 }
@@ -122,6 +128,7 @@ void main(){
   int input = 0;
 	while(TRUE){
 		
+        // Exibe o menu de opções
 		printf("Envie um comando:\n");
 		printf("1 - Solicitar a situação do NODEMCU\n");
 		printf("2 - Solicitar o valor da entrada analógica\n");
@@ -132,23 +139,26 @@ void main(){
 		scanf("%d",&input);
 		switch(input){
 			case 1:
+                // Pedir o status da nodeMCU
 				serialFlush();
 				serialPutchar(GET_NODEMCU_SITUATION);
 				break;
 			case 2:
+                // Pedir o valor da entrada analógica e exibir o valor no display LCD
 				serialFlush();
 				serialPutchar(GET_ANALOG_INPUT_VALUE);
 				serialGetString();
 				break;
 			case 3:
+                // Pedir o valor de uma entrada Digital
 				printf("Informe o endereço do sensor\n[0] Sensor D0\n[1] Sensor D1\n[2] Sensor D2\n[3] Sensor D0\n[3] Sensor D3\n[4] Sensor D4\n[5] Sensor D5\n[6] Sensor D6\n[7] Sensor D7");
 				int addr = 10;
 				scanf("%d", &addr);
 				serialFlush();
 				serialPutchar(GET_DIGITAL_INPUT_VALUE);
+                // Enviar o endereço do sensor e printar o valor de retorno do respectivo sensor no display LCD
 				switch (addr){
 					case 0:
-					
 						serialPutchar(ADDR_D0);
 						clear_lcd();
 						print_lcd("Sensor D0:");
@@ -199,12 +209,14 @@ void main(){
 				}
 				break;
 			case 4:
+                // Acender o led e exibir a mensagem de LED Ligado no display LCD
 				serialFlush();
 				serialPutchar(SET_ON_NODEMCU_LED);
 				clear_lcd();
 				print_lcd("Led Ligado");
 				break;
 			case 5:
+                // apagar o led e exibir a mensagem de LED Desligado no display LCD
 				serialFlush();
 				serialPutchar(SET_OFF_NODEMCU_LED);
 				clear_lcd();
