@@ -186,7 +186,11 @@ https://user-images.githubusercontent.com/72475500/200979465-37ce87f7-faf1-4883-
 
 #### Teste do sensor digital
 
+https://user-images.githubusercontent.com/72475500/200980204-b9e2c135-1d64-482a-ac4f-2822577bc50a.mp4
+
 #### Teste do sensor analógico
+
+
 
 <a id="secao9"></a>
 ## Limitações do projeto
