@@ -164,6 +164,12 @@ while(rx_length == -1){
  
 ```
 
+## Testes realizados
+
+#### Teste do led da NODEMCU
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/7k6Zos6qosA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 ## Limitações do projeto
 
 #### O sistema pode ficar em loop infinito se não houver dados para serem lidos
